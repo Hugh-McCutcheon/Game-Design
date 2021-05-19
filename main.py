@@ -154,7 +154,6 @@ class MyGame(arcade.Window):
                 print(len(self.my_map.layers[3].layer_data)*64)
                 print(len(self.my_map.layers[3].layer_data[0])*64)
 
-        # self.wall_list.extend(self.enemy)
 
     def on_key_release(self, key, modifiers):
         self.player.on_key_release(key)
