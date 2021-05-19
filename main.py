@@ -171,7 +171,7 @@ class MyGame(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         self.frame_count += 1
-        #self.javlin.draw()
+
 
         self.view_center += Vec2d(self.player.center_x - self.view_center.x, self.player.center_y - self.view_center.y) * 0.2
 
