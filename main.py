@@ -172,8 +172,8 @@ class MyGame(arcade.Window):
         arcade.start_render()
         self.frame_count += 1
 
-
-        self.view_center += Vec2d(self.player.center_x - self.view_center.x, self.player.center_y - self.view_center.y) * 0.2
+        self.view_center += Vec2d(self.player.center_x - self.view_center.x,
+                                  self.player.center_y - self.view_center.y) * 0.2
 
         self.wall_list = self.player.wall_list
         self.view_left = (self.player.center_x - constants.SCREEN_WIDTH // 2)
