@@ -156,8 +156,6 @@ class PlayerCharacter(arcade.Sprite):
 
     def update(self):
         # Add some friction
-        """if self.space_held and self.temp_grav <= constants.GRAVITY:
-            self.temp_grav += 0.001"""
         if self.change_x > constants.FRICTION:
             #self.FACING = 1
             self.change_x -= constants.FRICTION
@@ -183,11 +181,6 @@ class PlayerCharacter(arcade.Sprite):
         else:
             self.change_x = 0
 
-
-        """if self.change_x > constants.MAX_SPEED:
-            self.change_x = constants.MAX_SPEED
-        elif self.change_x < -constants.MAX_SPEED:
-            self.change_x = -constants.MAX_SPEED"""
         n = 64
         if self.right_foot.x < self.center_x - n:
             self.move = True
