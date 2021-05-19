@@ -157,10 +157,8 @@ class PlayerCharacter(arcade.Sprite):
     def update(self):
         # Add some friction
         if self.change_x > constants.FRICTION:
-            #self.FACING = 1
             self.change_x -= constants.FRICTION
         elif self.change_x < -constants.FRICTION:
-            #self.FACING = 0
             self.change_x += constants.FRICTION
         else:
             self.change_x = 0
