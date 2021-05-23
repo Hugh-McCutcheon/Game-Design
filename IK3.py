@@ -1,6 +1,7 @@
 import math
 import arcade
 from pymunk import Vec2d
+from PIL import Image
 
 white = (255, 255, 255)
 
@@ -206,8 +207,40 @@ def simple_ik(Joint0_: Vec2d=(0,0), Joint1_: Vec2d = (0,0), Hand_: Vec2d = (0,0)
     return IK_list
 
 
+def clip(surf, x, y, x_size, y_size):
+    handle_surf = surf.copy()
+    clipR = arcade.Rect(x, y, x_size, y_size)
+    handle_surf.set_clip(clipR)
+    image = surf.subsurface(handle_surf.get_clip())
+    return image.copy()
 
 
+def text(image):
+    """
+    :param Image image:
+    :return:
+    """
+    global characters
+    spacing = 1
+    character_order = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+    current_char_width = 0
+    characters = []
+    character_count = 0
+    for x in range(image.width):
+        c = image.getpixel((x, 0))
+        if c == (127, 127, 127):
+            """char_img = clip(image, x-current_char_width, 0, current_char_width, image.height)
+            characters[character_order[character_count//2]] = char_img.copy()"""
+            character_count += 1
+            print(f'What position the character is in: {character_count}')
+            print(f'How wide the character is: {current_char_width}')
+            print(f'The position of the x is: {x-current_char_width+1}, width={current_char_width}')
+            texture = arcade.load_texture('Sprites/Medievil text.png', x=x-current_char_width+1, y=0, width=current_char_width, height=image.height)
+            characters.append(texture)
+            current_char_width = 0
+        else:
+            current_char_width += 1
+    return tuple(characters)
 class IK(arcade.Window):
     def __init__(self):
         """
@@ -300,7 +333,8 @@ class IK(arcade.Window):
             self.direction_y = (self.endy-self.starty)/self.distance
             self.X = self.startx
             self.Y = self.starty
-
+        if key == arcade.key.E:
+            e = text(Image.open('Sprites/Medievil text.png'))
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         self.mouseX = x

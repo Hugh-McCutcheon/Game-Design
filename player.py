@@ -50,8 +50,9 @@ class PlayerCharacter(arcade.Sprite):
         self.movel = False
         self.idle = False
         self.airborne = False
+        # end of animations/inverse kinamatics
         self.delta_time = 1/60
-        # end of animations for the player
+
         #  javlin
         self.javlin = Javlin()
         self.L = False
@@ -76,6 +77,13 @@ class PlayerCharacter(arcade.Sprite):
             self.A = True
         elif key == arcade.key.D:
             self.D = True
+
+        if key == arcade.key.E:
+            x = math.floor(self.player.center_x/64)
+            y = math.floor(self.player.center_y/64)
+            if self.my_map.layers[3].layer_data[99-y][x] != 0:
+                print(len(self.my_map.layers[3].layer_data)*64)
+                print(len(self.my_map.layers[3].layer_data[0])*64)
 
 
     def on_key_release(self, key: int):
@@ -270,7 +278,6 @@ class PlayerCharacter(arcade.Sprite):
         else:
             self.FACING = 0
         if self.R:
-
             self.javlin.position = self.position
             angle = math.atan2((self.mouseY-self.javlin.center_y), (self.mouseX - self.javlin.center_x))
             self.javlin.angle = math.degrees(angle)

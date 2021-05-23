@@ -1,11 +1,26 @@
 import arcade
+from PIL import Image
 
-
+scaling = 6
 letter = []
-for y in range(3):
-    for x in range(26):
-        texture = arcade.load_texture('Sprites/Text and numbers.png', x=x * 16, y=y*32, width=16, height=32)
-        letter.append(texture)
+image = Image.open('Sprites/Medievil text calc.png')
+current_char_width = 0
+character_count = 0
+for x in range(image.width):
+    c = image.getpixel((x, 0))
+    if c == (255, 0, 0, 255):
+        character_count += 1
+        print(f'What position the character is in: {character_count}')
+        print(f'How wide the character is: {current_char_width*scaling}')
+        print(f'The position of the x is: {(x-current_char_width)*scaling}, width={current_char_width*scaling}')
+        text = arcade.load_texture('Sprites/Medievil text.png', x=(x-current_char_width)*scaling, y=0,
+                                   width=current_char_width*scaling, height=image.height*scaling)
+        letter.append(text)
+        current_char_width = 0
+
+    else:
+        current_char_width += 1
+
 
 LETTERS = tuple(letter)
 
@@ -92,10 +107,13 @@ LETTER_CODE = {
 
 
 }
-LETTER_SIZE = 16
+LETTER_SIZE = 0
 
 
-def gen_letter_list(string: str = None, s_x: float = 0, s_y: float = 0, scale: float = 1, gap: int = 1):
+
+
+
+def gen_letter_list(string: str = None, s_x: float = 0, s_y: float = 0, scale: float = 1, gap: int = 10):
     """
     :param string: The actual string that is being converted
     :param s_x: The center x position of the first letter
@@ -105,12 +123,23 @@ def gen_letter_list(string: str = None, s_x: float = 0, s_y: float = 0, scale: f
     :return: It returns a SpriteList with all of the letter as Sprites
     """
     letter_list = arcade.SpriteList()
+    string.lower()
+    prev_letter_width = 0
+    prev_letter_pos = s_x
     for index, char in enumerate(string):
         if char != " ":
             texture = LETTERS[LETTER_CODE[char]]
+            spacing = (prev_letter_pos - s_x) + prev_letter_width/2 + texture.width/2 + gap
             cur_letter = arcade.Sprite(scale=scale,
-                                       center_x=s_x + (((gap + LETTER_SIZE) * scale) * index),
+                                       center_x=s_x + spacing,
                                        center_y=s_y)
+            prev_letter_width = texture.width
+            prev_letter_pos = s_x + spacing
             cur_letter.texture = texture
             letter_list.append(cur_letter)
+        else:
+            space_width = LETTERS[len(LETTERS)-1]
+            spacing = (prev_letter_pos - s_x) + prev_letter_width / 2 + space_width.width / 2 + gap
+            prev_letter_width = space_width.width
+            prev_letter_pos = s_x + spacing
     return letter_list

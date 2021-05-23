@@ -147,12 +147,7 @@ class MyGame(arcade.Window):
         elif key == arcade.key.LSHIFT:
             self.javlin.position = self.player.position
             #  self.wall_list.append(self.player.javlin)
-        elif key == arcade.key.E:
-            x = math.floor(self.player.center_x/64)
-            y = math.floor(self.player.center_y/64)
-            if self.my_map.layers[3].layer_data[99-y][x] != 0:
-                print(len(self.my_map.layers[3].layer_data)*64)
-                print(len(self.my_map.layers[3].layer_data[0])*64)
+
 
 
     def on_key_release(self, key, modifiers):
@@ -170,14 +165,13 @@ class MyGame(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         self.frame_count += 1
-
         self.view_center += Vec2d(self.player.center_x - self.view_center.x,
-                                  self.player.center_y - self.view_center.y) * 0.2
+                                  self.player.center_y - self.view_center.y) * .2
 
         self.wall_list = self.player.wall_list
-        self.view_left = (self.player.center_x - constants.SCREEN_WIDTH // 2)
+        self.view_left = (self.view_center.x - constants.SCREEN_WIDTH // 2)
         self.view_left = int(self.view_left)
-        self.view_bottom = (self.player.center_y - constants.SCREEN_HEIGHT // 2)
+        self.view_bottom = (self.view_center.y - constants.SCREEN_HEIGHT // 2)
         self.view_bottom = int(self.view_bottom)
         if self.view_left < 0:
             self.view_left = 0
@@ -203,7 +197,7 @@ class MyGame(arcade.Window):
         # self.enemy_list.draw()
         if self.last_time and self.frame_count % 60 == 0:
             fps = 1.0 / (time.time() - self.last_time) * 60
-            self.fps_message = f"FPS: {fps:5.0f}"
+            self.fps_message = f"FPS:{fps:5.0f}"
             # take this out later
             print(self.fps_message)
 
@@ -213,11 +207,9 @@ class MyGame(arcade.Window):
         if self.path:
             arcade.draw_line_strip(self.path, arcade.color.RED, 5)
 
-        text1 = Characters.gen_letter_list(str(self.fps_message), self.view_left + 8,
-                                           self.view_bottom + constants.SCREEN_HEIGHT - 16)
+        text1 = Characters.gen_letter_list(str(self.fps_message), self.view_left,
+                                           self.view_bottom + constants.SCREEN_HEIGHT-50)
         text1.draw()
-        arcade.draw_point(self.view_center.x, self.view_center.y, (255, 255, 255), 10)
-        print(self.player.change_x)
 
     def on_update(self, delta_time: float):
         """ Game logic """

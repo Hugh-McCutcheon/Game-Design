@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.4" tiledversion="1.4.3" name="Background" tilewidth="64" tileheight="64" tilecount="240" columns="10">
+<tileset version="1.4" tiledversion="1.4.3" name="Background" tilewidth="64" tileheight="64" tilecount="300" columns="10">
  <grid orientation="orthogonal" width="32" height="32"/>
  <image source="../../../OneDrive/Documents/Pixel Art/Background.png" width="666" height="1536"/>
  <terraintypes>
