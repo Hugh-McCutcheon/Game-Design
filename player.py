@@ -22,6 +22,7 @@ class PlayerCharacter(arcade.Sprite):
         self.scale = constants.PLAYER_SCALING
         self.space_held = False
         self.temp_grav = constants.GRAVITY
+        self.my_map = None
 
         # the limbs
         self.right_foot = Vec2d(self.center_x, self.center_y - 32)
@@ -79,11 +80,11 @@ class PlayerCharacter(arcade.Sprite):
             self.D = True
 
         if key == arcade.key.E:
-            x = math.floor(self.player.center_x/64)
-            y = math.floor(self.player.center_y/64)
-            if self.my_map.layers[3].layer_data[99-y][x] != 0:
-                print(len(self.my_map.layers[3].layer_data)*64)
-                print(len(self.my_map.layers[3].layer_data[0])*64)
+            x = math.floor(self.center_x/64)
+            y = math.floor(self.center_y/64)
+            if self.my_map.layers[2].layer_data[99-y][x] != 0:
+                print(len(self.my_map.layers[2].layer_data)*64)
+                print(len(self.my_map.layers[2].layer_data[0])*64)
 
 
     def on_key_release(self, key: int):

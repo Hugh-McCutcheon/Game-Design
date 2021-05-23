@@ -1,7 +1,7 @@
 import arcade
 from PIL import Image
 
-scaling = 6
+scaling = 6  # how much you scailed up the end sprite
 letter = []
 image = Image.open('Sprites/Medievil text calc.png')
 current_char_width = 0
@@ -10,9 +10,6 @@ for x in range(image.width):
     c = image.getpixel((x, 0))
     if c == (255, 0, 0, 255):
         character_count += 1
-        print(f'What position the character is in: {character_count}')
-        print(f'How wide the character is: {current_char_width*scaling}')
-        print(f'The position of the x is: {(x-current_char_width)*scaling}, width={current_char_width*scaling}')
         text = arcade.load_texture('Sprites/Medievil text.png', x=(x-current_char_width)*scaling, y=0,
                                    width=current_char_width*scaling, height=image.height*scaling)
         letter.append(text)
@@ -129,7 +126,7 @@ def gen_letter_list(string: str = None, s_x: float = 0, s_y: float = 0, scale: f
     for index, char in enumerate(string):
         if char != " ":
             texture = LETTERS[LETTER_CODE[char]]
-            spacing = (prev_letter_pos - s_x) + prev_letter_width/2 + texture.width/2 + gap
+            spacing = (prev_letter_pos - s_x) + (prev_letter_width / 2 + texture.width / 2 + gap) * scaling
             cur_letter = arcade.Sprite(scale=scale,
                                        center_x=s_x + spacing,
                                        center_y=s_y)
@@ -139,7 +136,7 @@ def gen_letter_list(string: str = None, s_x: float = 0, s_y: float = 0, scale: f
             letter_list.append(cur_letter)
         else:
             space_width = LETTERS[len(LETTERS)-1]
-            spacing = (prev_letter_pos - s_x) + prev_letter_width / 2 + space_width.width / 2 + gap
+            spacing = (prev_letter_pos - s_x) + (prev_letter_width / 2 + space_width.width / 2 + gap) * scaling
             prev_letter_width = space_width.width
             prev_letter_pos = s_x + spacing
     return letter_list

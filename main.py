@@ -134,6 +134,7 @@ class MyGame(arcade.Window):
         self.enemy.level_list = self.wall_list
         self.player.physics_engines.append(self.physics_engine)
         self.player.wall_list = self.wall_list
+        self.player.my_map = self.my_map
         self.enemy.physics_engines.append(self.physics_engine_enemy)
 
     def on_key_press(self, key, modifiers):
