@@ -2,6 +2,7 @@ import arcade
 import time
 import math
 from pymunk import Vec2d
+import json
 import Characters
 
 import constants
@@ -16,7 +17,7 @@ class MyGame(arcade.Window):
         """
         Initializer
         """
-        super().__init__(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE, fullscreen=False)
+        super().__init__(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE, fullscreen=True)
         """Enemy and Player Things"""
         self.player_list = None
         self.player = None
@@ -27,6 +28,7 @@ class MyGame(arcade.Window):
 
         """Tilemap and Level Things"""
         self.wall_list = None
+        self.map_wall_list = None
         self.stationary_spawn_list = None
         self.physics_engine = None
         self.physics_engine_enemy = None
@@ -74,9 +76,10 @@ class MyGame(arcade.Window):
         self.enemy_list.append(self.enemy)
 
         self.center_window()
+        self.wall_list = arcade.SpriteList()
         self.load_level()
 
-        self.player.position = self.pspawn_list[0].position
+        # self.player.position = self.pspawn_list[0].position
 
         """pathfinding"""
         grid_size = 32
@@ -99,30 +102,49 @@ class MyGame(arcade.Window):
 
     def load_level(self):
         # Read in the tiled map
-        self.my_map = arcade.tilemap.read_tmx('Map/Maps/Test Map.tmx')
+        with open('Map/Maps/Castle/Castle.world') as castle_world:
+            data = json.load(castle_world)
 
-        # --- Walls ---
+        for i in range(len(data['maps'])):
+            print(i)
+            map = data['maps'][i]['fileName']
+            map_x = data['maps'][i]['x']
+            map_y = -data['maps'][i]['y']
+            print(map, map_x, map_y)
+            self.my_map = arcade.tilemap.read_tmx(f'Map/Maps/Castle/{map}')
+            print(f'Num layers{len(self.my_map.layers)}')
+            # --- Walls ---
 
-        # Grab the layer of items we can't move through
+            # Grab the layer of items we can't move through
 
-        self.wall_list = arcade.tilemap.process_layer(self.my_map,
-                                                      'Ground',
-                                                      constants.TILE_SPRITE_SCALING,
-                                                      use_spatial_hash=True)
-
-        self.pspawn_list = arcade.tilemap.process_layer(self.my_map,
-                                                        'Spawn Layer',
-                                                        constants.TILE_SPRITE_SCALING,
-                                                        use_spatial_hash=False)
-
-        self.background = arcade.tilemap.process_layer(self.my_map,
-                                                       'Background',
-                                                       constants.TILE_SPRITE_SCALING,
-                                                       use_spatial_hash=False)
-        self.interactable_list = arcade.tilemap.process_layer(self.my_map,
-                                                              'Interactable',
+            self.map_wall_list = arcade.tilemap.process_layer(self.my_map,
+                                                              'Ground',
                                                               constants.TILE_SPRITE_SCALING,
-                                                              use_spatial_hash=False)
+                                                              use_spatial_hash=True)
+            for wall in self.map_wall_list:
+                wall.center_x += map_x
+                wall.center_y += map_y
+
+            self.wall_list.extend(self.map_wall_list)
+
+            map_pspawn_list = arcade.tilemap.process_layer(self.my_map,
+                                                           'Spawn Layer',
+                                                           constants.TILE_SPRITE_SCALING,
+                                                           use_spatial_hash=False)
+            for node in map_pspawn_list:
+                node.center_x += map_x
+                node.center_y += map_y
+            self.pspawn_list = arcade.SpriteList()
+            self.pspawn_list.extend(map_pspawn_list)
+
+            """self.background = arcade.tilemap.process_layer(self.my_map,
+                                                           'Background',
+                                                           constants.TILE_SPRITE_SCALING,
+                                                           use_spatial_hash=False)"""
+            """self.interactable_list = arcade.tilemap.process_layer(self.my_map,
+                                                                  'Interactable',
+                                                                  constants.TILE_SPRITE_SCALING,
+                                                                  use_spatial_hash=False)"""
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player,
                                                              self.wall_list,
                                                              gravity_constant=constants.GRAVITY)
@@ -149,8 +171,6 @@ class MyGame(arcade.Window):
             self.javlin.position = self.player.position
             #  self.wall_list.append(self.player.javlin)
 
-
-
     def on_key_release(self, key, modifiers):
         self.player.on_key_release(key)
         self.enemy.on_key_release(key)
@@ -158,7 +178,6 @@ class MyGame(arcade.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         """ Called whenever the mouse button is clicked. """
         self.player.on_mouse_press(x, y, button, modifiers)
-
 
     def on_mouse_release(self, x, y, button, modifiers):
         self.player.on_mouse_release(x, y, button, modifiers)
@@ -175,26 +194,30 @@ class MyGame(arcade.Window):
         self.view_bottom = (self.view_center.y - constants.SCREEN_HEIGHT // 2)
         self.view_bottom = int(self.view_bottom)
         if self.view_left < 0:
-            self.view_left = 0
-        elif self.view_left > (len(self.my_map.layers[3].layer_data[0])*64)-constants.SCREEN_WIDTH:
-            self.view_left = (len(self.my_map.layers[3].layer_data[0])*64)-constants.SCREEN_WIDTH
+            pass
+            #self.view_left = 0
+        elif self.view_left > (len(self.my_map.layers[0].layer_data[0]) * 64) - constants.SCREEN_WIDTH:
+            pass
+            #self.view_left = (len(self.my_map.layers[0].layer_data[0])*64)-constants.SCREEN_WIDTH
         if self.view_bottom < 0:
-            self.view_bottom = 0
-        elif self.view_bottom > (len(self.my_map.layers[3].layer_data)*64)-constants.SCREEN_HEIGHT:
-            self.view_bottom = (len(self.my_map.layers[3].layer_data)*64)-constants.SCREEN_HEIGHT
+            pass
+            #self.view_bottom = 0
+        elif self.view_bottom > (len(self.my_map.layers[0].layer_data) * 64) - constants.SCREEN_HEIGHT:
+            pass
+            #self.view_bottom = (len(self.my_map.layers[0].layer_data) * 64) - constants.SCREEN_HEIGHT
 
         arcade.set_viewport(self.view_left,
                             constants.SCREEN_WIDTH + self.view_left,
                             self.view_bottom,
                             constants.SCREEN_HEIGHT + self.view_bottom)
-        self.background.draw()
+        # self.background.draw()
         self.player_list.draw()
         self.player.draw()
         self.enemy_list.draw()
 
         self.wall_list.draw()
-        len(self.interactable_list)
-        self.interactable_list.draw()
+        # len(self.interactable_list)
+        # self.interactable_list.draw()
         # self.enemy_list.draw()
         if self.last_time and self.frame_count % 60 == 0:
             fps = 1.0 / (time.time() - self.last_time) * 60
@@ -209,8 +232,23 @@ class MyGame(arcade.Window):
             arcade.draw_line_strip(self.path, arcade.color.RED, 5)
 
         text1 = Characters.gen_letter_list(str(self.fps_message), self.view_left,
-                                           self.view_bottom + constants.SCREEN_HEIGHT-50)
+                                           self.view_bottom + constants.SCREEN_HEIGHT - 50)
         text1.draw()
+        with open('Map/Maps/Castle/Castle.world') as castle_world:
+            data = json.load(castle_world)
+        width = data['maps'][0]['width']
+        height = data['maps'][0]['height']
+        x = data['maps'][0]['x']
+        y = -data['maps'][0]['y']
+        p = Vec2d(self.player.center_x, self.player.center_y)
+        bl = Vec2d(x, y)
+        tr = Vec2d(width+x, height+y)
+        if p.x > bl.x and p.x < tr.x and p.y > bl.y and p.y < tr.y:
+            print('true')
+        else:
+            pass
+
+        arcade.draw_rectangle_outline(x + width / 2, y + height / 2, width, height, (255, 0, 0), 5)
 
     def on_update(self, delta_time: float):
         """ Game logic """
@@ -219,7 +257,7 @@ class MyGame(arcade.Window):
         self.player.physics_engines[0].update()
         self.physics_engine_enemy.update()
         self.player.update()
-        #self.javlin.update()
+        # self.javlin.update()
         self.player.mouseX = self.x + self.view_left
         self.player.mouseY = self.y + self.view_bottom
         playertestposx = (math.floor((self.player.center_x - 32) / 32))
@@ -239,7 +277,7 @@ class MyGame(arcade.Window):
                                                     playerpos,
                                                     self.barrier_list,
                                                     diagonal_movement=True)
-        self.enemy.path = self.path"""
+        self.enemy.path = self.pa   th"""
 
         self.enemy_list.update()
         self.player_list.update()
@@ -250,6 +288,7 @@ class MyGame(arcade.Window):
 
         self.x = x
         self.y = y
+
 
 def main():
     window = MyGame()

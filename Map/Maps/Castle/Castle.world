@@ -1,0 +1,27 @@
+{
+    "maps": [
+        {
+            "fileName": "CastleStart.tmx",
+            "height": 2048,
+            "width": 4096,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "fileName": "Castle1.tmx",
+            "height": 2560,
+            "width": 4096,
+            "x": 4096,
+            "y": 0
+        },
+        {
+            "fileName": "Castle2.tmx",
+            "height": 2560,
+            "width": 4096,
+            "x": 0,
+            "y": 2560
+        }
+    ],
+    "onlyShowAdjacentMaps": false,
+    "type": "world"
+}

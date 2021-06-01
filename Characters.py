@@ -101,8 +101,6 @@ LETTER_CODE = {
     '_': 76,
     '-': 77,
     ' ': 78,
-
-
 }
 LETTER_SIZE = 0
 
@@ -126,7 +124,7 @@ def gen_letter_list(string: str = None, s_x: float = 0, s_y: float = 0, scale: f
     for index, char in enumerate(string):
         if char != " ":
             texture = LETTERS[LETTER_CODE[char]]
-            spacing = (prev_letter_pos - s_x) + (prev_letter_width / 2 + texture.width / 2 + gap) * scaling
+            spacing = (prev_letter_pos - s_x) + (prev_letter_width / 2 + texture.width / 2 + gap)
             cur_letter = arcade.Sprite(scale=scale,
                                        center_x=s_x + spacing,
                                        center_y=s_y)
@@ -136,7 +134,7 @@ def gen_letter_list(string: str = None, s_x: float = 0, s_y: float = 0, scale: f
             letter_list.append(cur_letter)
         else:
             space_width = LETTERS[len(LETTERS)-1]
-            spacing = (prev_letter_pos - s_x) + (prev_letter_width / 2 + space_width.width / 2 + gap) * scaling
+            spacing = (prev_letter_pos - s_x) + (prev_letter_width / 2 + space_width.width / 2 + gap)
             prev_letter_width = space_width.width
             prev_letter_pos = s_x + spacing
     return letter_list

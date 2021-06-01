@@ -78,6 +78,8 @@ class PlayerCharacter(arcade.Sprite):
             self.A = True
         elif key == arcade.key.D:
             self.D = True
+        elif key == arcade.key.ENTER:
+            self.change_y = 26
 
         if key == arcade.key.E:
             x = math.floor(self.center_x/64)
