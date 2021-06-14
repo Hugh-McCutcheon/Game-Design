@@ -3,8 +3,9 @@ import IK3
 import constants
 import math
 from pymunk import Vec2d
+import json
 
-
+ui = arcade.Sprite('Sprites/UI/HUD test.png')
 class PlayerCharacter(arcade.Sprite):
     """ The player class. """
     def __init__(self):
@@ -21,8 +22,8 @@ class PlayerCharacter(arcade.Sprite):
         self.texture = arcade.load_texture('Sprites/Player/limbs/Outline Temp.png')
         self.scale = constants.PLAYER_SCALING
         self.space_held = False
-        self.temp_grav = constants.GRAVITY
         self.my_map = None
+        self.spawn_list = None
 
         # the limbs
         self.right_foot = Vec2d(self.center_x, self.center_y - 32)
@@ -67,13 +68,32 @@ class PlayerCharacter(arcade.Sprite):
         self.curve = None
         self.T = 0
 
+        #  other player things
+        self.dead = False
+        self.hurt = False
+        self.danger_list = arcade.SpriteList()
+        self.checkpoint = None
+        with open('equipment_data.json') as equipmentfile:
+            self.equipmentjson = json.load(equipmentfile)
+            self.health = [self.equipmentjson['none']['max_health'], self.equipmentjson['none']['max_health']]
+            print(self.health)
+
+
+
+
+
+    def setup(self):
+        with open('Saves/Save1.json') as savefile:
+            savejson = json.load(savefile)
+        self.position = self.spawn_list[savejson['location']['load_position']].position
+        self.checkpoint = self.spawn_list[savejson['location']['load_position']].position
+
 
     def on_key_press(self, key: int):
         if key == arcade.key.SPACE or key == arcade.key.W:
             if self.physics_engines[self.level - 1].can_jump():
                 self.change_y = constants.JUMP_SPEED
                 self.space_held = True
-                self.temp_grav = 0.5
         elif key == arcade.key.A:
             self.A = True
         elif key == arcade.key.D:
@@ -94,7 +114,6 @@ class PlayerCharacter(arcade.Sprite):
             self.space_held = False
             if self.change_y > 0:
                 self.change_y *= constants.CUT_JUMP_HEIGHT
-            self.temp_grav = constants.GRAVITY
         elif key == arcade.key.A:
             self.A = False
         elif key == arcade.key.D:
@@ -142,6 +161,7 @@ class PlayerCharacter(arcade.Sprite):
                                         facing[self.FACING])
         #self.left_arm = IK3.IK_solverR()
     def draw(self):
+        global ui
         facing = {
             0: True,
             1: False
@@ -160,6 +180,8 @@ class PlayerCharacter(arcade.Sprite):
                                                                  mirrored=facing[self.FACING]))
         self.javlin.draw()
         arcade.draw_line_strip(self.left_arm, grey, 8)
+
+
 
 
 
@@ -307,6 +329,20 @@ class PlayerCharacter(arcade.Sprite):
                 self.JTY = self.JSY
                 self.wall_list.insert(0, self.javlin)
 
+        if self.hurt and self.health[0] > 1:
+            self.position = self.checkpoint
+            self.health[0] -= 1
+            self.hurt = False
+        elif self.hurt:
+            self.health[0] -= 1
+            self.dead = True
+            self.hurt = False
+
+        if self.dead:
+            print('dead')
+            self.change_y = 1000
+
+
 
 
 
@@ -327,3 +363,34 @@ class Javlin(arcade.Sprite):
     def __init__(self):
         super().__init__()
         self.texture = arcade.load_texture('Sprites/Player/Javlin.png')
+
+
+class DisplayHealth(arcade.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.texture = arcade.load_texture('Sprites/UI/HealthBar.png')
+        self.view_left = 0
+        self.view_bottom = 0
+        self.view_center = 0
+        self.health = 3
+        self.max_health = 3
+        print('this is the locations for everything', self.view_center, self.view_left, self.view_bottom)
+        self.bar = arcade.Sprite('Sprites/UI/HealthBarBar.png')
+        self.bar_list = arcade.SpriteList()
+        self.bar.center_x = self.center_x
+        self.bar.center_y = self.center_y
+        self.bar_list.append(self.bar)
+
+    def update(self):
+        pass
+
+    def draw(self):
+        width = 492*(self.health/self.max_health)
+        self.bar.center_x = self.center_x + 60 - (492 - width)/2
+        self.bar.center_y = self.center_y
+        self.bar.width = width
+        self.bar_list.draw()
+        print(len(self.bar_list))
+        #arcade.draw_scaled_texture_rectangle(self.center_x,self.center_y,arcade.load_texture('Sprites/UI/HealthBarBar.png'))
+
+

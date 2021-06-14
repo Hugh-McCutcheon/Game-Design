@@ -17,11 +17,13 @@ class MyGame(arcade.Window):
         """
         Initializer
         """
-        super().__init__(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE, fullscreen=True)
+        super().__init__(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE, fullscreen=False)
         """Enemy and Player Things"""
         self.player_list = None
         self.player = None
         self.javlin = None
+        self.display_health_list = None
+        self.display_health = None
 
         self.enemy_list = None
         self.enemy = None
@@ -35,6 +37,7 @@ class MyGame(arcade.Window):
         self.pspawn_list = None
         self.background = None
         self.interactable_list = None
+        self.danger_list = None
 
         self.my_map = None
 
@@ -52,7 +55,7 @@ class MyGame(arcade.Window):
         # Pathfinding stuff #
         self.barrier_list = None
         self.path = None
-        self.lastpos = None
+        self.lastpos = 300
 
     def setup(self):
         """Set all of the variables at the start"""
@@ -63,10 +66,17 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
         self.player = player.PlayerCharacter()
         self.javlin = player.Javlin()
+        self.display_health_list = arcade.SpriteList()
+        self.display_health = player.DisplayHealth()
+
 
         self.player.center_x = constants.SCREEN_WIDTH // 2
         self.player.center_y = constants.SCREEN_HEIGHT // 2
         self.player_list.append(self.player)
+
+        self.display_health.center_x = 0
+        self.display_health.center_y = 0
+        self.display_health_list.append(self.display_health)
 
         """Enemy things"""
         self.enemy_list = arcade.SpriteList()
@@ -76,10 +86,15 @@ class MyGame(arcade.Window):
         self.enemy_list.append(self.enemy)
 
         self.center_window()
-        self.wall_list = arcade.SpriteList()
-        self.load_level()
 
-        # self.player.position = self.pspawn_list[0].position
+        """Map Things"""
+        self.wall_list = arcade.SpriteList()
+        self.pspawn_list = arcade.SpriteList()
+        self.danger_list = arcade.SpriteList()
+        self.load_level()
+        #self.player.position = self.pspawn_list[0].position
+        self.player.setup()
+        self.player.danger_list = self.danger_list
 
         """pathfinding"""
         grid_size = 32
@@ -134,9 +149,21 @@ class MyGame(arcade.Window):
             for node in map_pspawn_list:
                 node.center_x += map_x
                 node.center_y += map_y
-            self.pspawn_list = arcade.SpriteList()
+
             self.pspawn_list.extend(map_pspawn_list)
 
+            map_danger_list = arcade.tilemap.process_layer(self.my_map,
+                                                           'Dangers',
+                                                           constants.TILE_SPRITE_SCALING,
+                                                           use_spatial_hash=True)
+            for danger in map_danger_list:
+                danger.center_x += map_x
+                danger.center_y += map_y
+
+            self.danger_list.extend(map_danger_list)
+            print('danger list', self.danger_list)
+            print(len(self.danger_list))
+            #self.wall_list.extend(self.danger_list)
             """self.background = arcade.tilemap.process_layer(self.my_map,
                                                            'Background',
                                                            constants.TILE_SPRITE_SCALING,
@@ -157,6 +184,7 @@ class MyGame(arcade.Window):
         self.player.physics_engines.append(self.physics_engine)
         self.player.wall_list = self.wall_list
         self.player.my_map = self.my_map
+        self.player.spawn_list = self.pspawn_list
         self.enemy.physics_engines.append(self.physics_engine_enemy)
 
     def on_key_press(self, key, modifiers):
@@ -164,12 +192,27 @@ class MyGame(arcade.Window):
         self.enemy.on_key_press(key)
         if 49 <= key <= (48 + len(self.pspawn_list)):
             self.player.position = self.pspawn_list[key - 49].position
+            self.player.checkpoint = self.pspawn_list[key - 49].position
             self.enemy.position = self.pspawn_list[key - 49].position
+
+            with open("Saves/Save1.json", "r") as jsonFile:
+                data = json.load(jsonFile)
+
+            data["location"]["load_position"] = key - 49
+
+            with open("Saves/Save1.json", "w") as jsonFile:
+                json.dump(data, jsonFile)
         if key == arcade.key.ESCAPE:
             self.close()
         elif key == arcade.key.LSHIFT:
             self.javlin.position = self.player.position
             #  self.wall_list.append(self.player.javlin)
+        if key == arcade.key.UP:
+            self.lastpos += 10
+            print(self.lastpos)
+        elif key == arcade.key.DOWN:
+            self.lastpos -= 10
+            print(self.lastpos)
 
     def on_key_release(self, key, modifiers):
         self.player.on_key_release(key)
@@ -193,6 +236,9 @@ class MyGame(arcade.Window):
         self.view_left = int(self.view_left)
         self.view_bottom = (self.view_center.y - constants.SCREEN_HEIGHT // 2)
         self.view_bottom = int(self.view_bottom)
+        self.display_health.center_x = self.view_left + self.display_health.width // 2 + 10
+        self.display_health.center_y = self.view_bottom + constants.SCREEN_HEIGHT - self.display_health.height // 2 - 10
+
         if self.view_left < 0:
             pass
             #self.view_left = 0
@@ -215,7 +261,9 @@ class MyGame(arcade.Window):
         self.player.draw()
         self.enemy_list.draw()
 
+
         self.wall_list.draw()
+        self.danger_list.draw()
         # len(self.interactable_list)
         # self.interactable_list.draw()
         # self.enemy_list.draw()
@@ -224,6 +272,8 @@ class MyGame(arcade.Window):
             self.fps_message = f"FPS:{fps:5.0f}"
             # take this out later
             print(self.fps_message)
+
+
 
         if self.frame_count % 60 == 0:
             self.last_time = time.time()
@@ -234,6 +284,11 @@ class MyGame(arcade.Window):
         text1 = Characters.gen_letter_list(str(self.fps_message), self.view_left,
                                            self.view_bottom + constants.SCREEN_HEIGHT - 50)
         text1.draw()
+
+        Characters.gen_letter_list(str(f'health:{self.player.health[0]}/{self.player.health[1]}'),
+                                   self.view_left, self.view_bottom + constants.SCREEN_HEIGHT - 120).draw()
+
+
         with open('Map/Maps/Castle/Castle.world') as castle_world:
             data = json.load(castle_world)
         width = data['maps'][0]['width']
@@ -244,19 +299,26 @@ class MyGame(arcade.Window):
         bl = Vec2d(x, y)
         tr = Vec2d(width+x, height+y)
         if p.x > bl.x and p.x < tr.x and p.y > bl.y and p.y < tr.y:
-            print('true')
+            pass
         else:
             pass
-
+        self.display_health.health = self.player.health[0]
+        self.display_health.max_health = self.player.health[1]
         arcade.draw_rectangle_outline(x + width / 2, y + height / 2, width, height, (255, 0, 0), 5)
+        self.display_health_list.draw()
+        self.display_health.draw()
+
+
 
     def on_update(self, delta_time: float):
         """ Game logic """
         self.player.delta_time = delta_time
-        self.player.physics_engines[0].gravity_constant = self.player.temp_grav
         self.player.physics_engines[0].update()
+        self.display_health.update()
         self.physics_engine_enemy.update()
         self.player.update()
+        if arcade.check_for_collision_with_list(self.player, self.danger_list):
+            self.player.hurt = True
         # self.javlin.update()
         self.player.mouseX = self.x + self.view_left
         self.player.mouseY = self.y + self.view_bottom
@@ -288,6 +350,10 @@ class MyGame(arcade.Window):
 
         self.x = x
         self.y = y
+
+    def load_save(self):
+        self.setup()
+        self.player.setup()
 
 
 def main():
