@@ -2,7 +2,7 @@
     "maps": [
         {
             "fileName": "CastleStart.tmx",
-            "height": 2048,
+            "height": 2560,
             "width": 4096,
             "x": 0,
             "y": 0
@@ -20,6 +20,13 @@
             "width": 4096,
             "x": 0,
             "y": 2560
+        },
+        {
+            "fileName": "Test Map.tmx",
+            "height": 6400,
+            "width": 6400,
+            "x": -6400,
+            "y": -2176
         }
     ],
     "onlyShowAdjacentMaps": false,

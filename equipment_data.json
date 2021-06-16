@@ -1,6 +1,6 @@
 {
   "none": {
-    "max_health": 3
+    "test": 0
   },
   "amulet_of_health": {
     "max_health": 5

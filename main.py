@@ -121,13 +121,12 @@ class MyGame(arcade.Window):
             data = json.load(castle_world)
 
         for i in range(len(data['maps'])):
-            print(i)
-            map = data['maps'][i]['fileName']
+            cur_map = data['maps'][i]['fileName']
             map_x = data['maps'][i]['x']
             map_y = -data['maps'][i]['y']
-            print(map, map_x, map_y)
-            self.my_map = arcade.tilemap.read_tmx(f'Map/Maps/Castle/{map}')
-            print(f'Num layers{len(self.my_map.layers)}')
+            height_diff = data['maps'][i]['height'] - data['maps'][0]['height']
+            print(height_diff)
+            self.my_map = arcade.tilemap.read_tmx(f'Map/Maps/Castle/{cur_map}')
             # --- Walls ---
 
             # Grab the layer of items we can't move through
@@ -138,7 +137,7 @@ class MyGame(arcade.Window):
                                                               use_spatial_hash=True)
             for wall in self.map_wall_list:
                 wall.center_x += map_x
-                wall.center_y += map_y
+                wall.center_y += (map_y - height_diff)
 
             self.wall_list.extend(self.map_wall_list)
 
@@ -151,18 +150,16 @@ class MyGame(arcade.Window):
                 node.center_y += map_y
 
             self.pspawn_list.extend(map_pspawn_list)
-
+            print(cur_map)
             map_danger_list = arcade.tilemap.process_layer(self.my_map,
                                                            'Dangers',
                                                            constants.TILE_SPRITE_SCALING,
-                                                           use_spatial_hash=True)
+                                                           use_spatial_hash=False)
             for danger in map_danger_list:
                 danger.center_x += map_x
                 danger.center_y += map_y
 
             self.danger_list.extend(map_danger_list)
-            print('danger list', self.danger_list)
-            print(len(self.danger_list))
             #self.wall_list.extend(self.danger_list)
             """self.background = arcade.tilemap.process_layer(self.my_map,
                                                            'Background',
@@ -192,27 +189,19 @@ class MyGame(arcade.Window):
         self.enemy.on_key_press(key)
         if 49 <= key <= (48 + len(self.pspawn_list)):
             self.player.position = self.pspawn_list[key - 49].position
-            self.player.checkpoint = self.pspawn_list[key - 49].position
+            self.player.checkpoint = self.pspawn_list[key - 49]
+            self.player.checkpoint_num = key - 49
             self.enemy.position = self.pspawn_list[key - 49].position
-
-            with open("Saves/Save1.json", "r") as jsonFile:
-                data = json.load(jsonFile)
-
-            data["location"]["load_position"] = key - 49
-
-            with open("Saves/Save1.json", "w") as jsonFile:
-                json.dump(data, jsonFile)
         if key == arcade.key.ESCAPE:
             self.close()
         elif key == arcade.key.LSHIFT:
             self.javlin.position = self.player.position
-            #  self.wall_list.append(self.player.javlin)
+
+        if key == arcade.key.ENTER:
+            self.save()
+
         if key == arcade.key.UP:
-            self.lastpos += 10
-            print(self.lastpos)
-        elif key == arcade.key.DOWN:
-            self.lastpos -= 10
-            print(self.lastpos)
+            self.player.health[0] += 1
 
     def on_key_release(self, key, modifiers):
         self.player.on_key_release(key)
@@ -307,6 +296,8 @@ class MyGame(arcade.Window):
         arcade.draw_rectangle_outline(x + width / 2, y + height / 2, width, height, (255, 0, 0), 5)
         self.display_health_list.draw()
         self.display_health.draw()
+        if self.player.dead:
+            self.load_save()
 
 
 
@@ -350,6 +341,21 @@ class MyGame(arcade.Window):
 
         self.x = x
         self.y = y
+
+    def save(self, n: int = 1):
+        with open("Saves/Save1.json", "r") as jsonFile:
+            savedata = json.load(jsonFile)
+        # """Location and level information"""
+        savedata["location"]["load_position"] = self.player.checkpoint_num
+
+        # """Equipment and gear information"""
+        savedata["equipment"]["equipped"] = self.player.equipped_item
+
+        # """Health information"""
+        savedata["health"]["current_health"] = self.player.health[0]
+
+        with open("Saves/Save1.json", "w") as jsonFile:
+            json.dump(savedata, jsonFile, indent=4)
 
     def load_save(self):
         self.setup()

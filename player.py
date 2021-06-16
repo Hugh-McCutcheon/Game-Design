@@ -73,10 +73,12 @@ class PlayerCharacter(arcade.Sprite):
         self.hurt = False
         self.danger_list = arcade.SpriteList()
         self.checkpoint = None
+        self.checkpoint_num = 0
+        self.equipped_item = 'none'
         with open('equipment_data.json') as equipmentfile:
             self.equipmentjson = json.load(equipmentfile)
-            self.health = [self.equipmentjson['none']['max_health'], self.equipmentjson['none']['max_health']]
-            print(self.health)
+            self.health = [self.equipmentjson['none'].get('max_health', 3),
+                           self.equipmentjson['none'].get('max_health', 3)]
 
 
 
@@ -85,8 +87,13 @@ class PlayerCharacter(arcade.Sprite):
     def setup(self):
         with open('Saves/Save1.json') as savefile:
             savejson = json.load(savefile)
+
         self.position = self.spawn_list[savejson['location']['load_position']].position
-        self.checkpoint = self.spawn_list[savejson['location']['load_position']].position
+        self.checkpoint = self.spawn_list[savejson['location']['load_position']]
+        with open('equipment_data.json') as equipmentfile:
+            self.equipmentjson = json.load(equipmentfile)
+        self.health = [savejson['health'].get('current_health', 3),
+                       self.equipmentjson[savejson['equipment']['equipped']].get('max_health', 3)]
 
 
     def on_key_press(self, key: int):
@@ -142,8 +149,7 @@ class PlayerCharacter(arcade.Sprite):
         if button == arcade.MOUSE_BUTTON_LEFT:
             self.L = False
         elif button == arcade.MOUSE_BUTTON_RIGHT:
-            #self.R = False
-            print('nene')
+            pass
     def limbs(self):
         facing = ['left', 'right']
         self.right_leg = IK3.IK_solverR(Vec2d(self.center_x, self.center_y+((self.right_foot.y - self.left_foot.y)/5)-7)
@@ -208,7 +214,7 @@ class PlayerCharacter(arcade.Sprite):
         elif not self.D and not self.A and abs(self.change_x) > 1:
             self.change_x *= math.pow(1 - constants.HORIZONTAL_DAMPING_STOPPING, self.delta_time * 10)
         elif self.D and self.A:
-            print(1)
+            pass
         else:
             self.change_x = 0
 
@@ -330,17 +336,13 @@ class PlayerCharacter(arcade.Sprite):
                 self.wall_list.insert(0, self.javlin)
 
         if self.hurt and self.health[0] > 1:
-            self.position = self.checkpoint
+            self.position = self.checkpoint.position
             self.health[0] -= 1
             self.hurt = False
         elif self.hurt:
             self.health[0] -= 1
             self.dead = True
             self.hurt = False
-
-        if self.dead:
-            print('dead')
-            self.change_y = 1000
 
 
 
@@ -374,7 +376,6 @@ class DisplayHealth(arcade.Sprite):
         self.view_center = 0
         self.health = 3
         self.max_health = 3
-        print('this is the locations for everything', self.view_center, self.view_left, self.view_bottom)
         self.bar = arcade.Sprite('Sprites/UI/HealthBarBar.png')
         self.bar_list = arcade.SpriteList()
         self.bar.center_x = self.center_x
@@ -390,7 +391,6 @@ class DisplayHealth(arcade.Sprite):
         self.bar.center_y = self.center_y
         self.bar.width = width
         self.bar_list.draw()
-        print(len(self.bar_list))
         #arcade.draw_scaled_texture_rectangle(self.center_x,self.center_y,arcade.load_texture('Sprites/UI/HealthBarBar.png'))
 
 

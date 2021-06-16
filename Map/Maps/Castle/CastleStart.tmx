@@ -2,7 +2,7 @@
 <map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="64" height="40" tilewidth="64" tileheight="64" infinite="0" nextlayerid="1244" nextobjectid="1">
  <tileset firstgid="1" source="../../Tile Sets/Wire.tsx"/>
  <tileset firstgid="10" source="../../Tile Sets/Dirt&amp;Stone.tsx"/>
- <layer id="1" name="Wire" width="64" height="40">
+ <layer id="1" name="Wire" width="64" height="40" visible="0">
   <data encoding="csv">
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
