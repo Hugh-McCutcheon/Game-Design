@@ -389,7 +389,7 @@ class DisplayHealth(arcade.Sprite):
         width = 492*(self.health/self.max_health)
         self.bar.center_x = self.center_x + 60 - (492 - width)/2
         self.bar.center_y = self.center_y
-        self.bar.width = width
+        #self.bar.width = width
         self.bar_list.draw()
         #arcade.draw_scaled_texture_rectangle(self.center_x,self.center_y,arcade.load_texture('Sprites/UI/HealthBarBar.png'))
 

@@ -57,6 +57,8 @@ class MyGame(arcade.Window):
         self.path = None
         self.lastpos = 300
 
+        self.dead_count = 0
+
     def setup(self):
         """Set all of the variables at the start"""
 
@@ -137,7 +139,7 @@ class MyGame(arcade.Window):
                                                               use_spatial_hash=True)
             for wall in self.map_wall_list:
                 wall.center_x += map_x
-                wall.center_y += (map_y - height_diff)
+                wall.center_y += map_y #(map_y - height_diff)
 
             self.wall_list.extend(self.map_wall_list)
 
@@ -297,40 +299,50 @@ class MyGame(arcade.Window):
         self.display_health_list.draw()
         self.display_health.draw()
         if self.player.dead:
-            self.load_save()
+            self.dead_count += 3
+            print(self.dead_count)
+            arcade.draw_rectangle_filled(self.view_center.x, self.view_center.y,
+                                         constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, (0, 0, 0, self.dead_count))
+            if self.dead_count >= 255:
+                #self.load_save()
+                #self.player.dead = False
+                print('done')
+
+
 
 
 
     def on_update(self, delta_time: float):
         """ Game logic """
-        self.player.delta_time = delta_time
-        self.player.physics_engines[0].update()
-        self.display_health.update()
-        self.physics_engine_enemy.update()
-        self.player.update()
-        if arcade.check_for_collision_with_list(self.player, self.danger_list):
-            self.player.hurt = True
-        # self.javlin.update()
-        self.player.mouseX = self.x + self.view_left
-        self.player.mouseY = self.y + self.view_bottom
-        playertestposx = (math.floor((self.player.center_x - 32) / 32))
-        playertestposy = (math.floor(self.player.center_y / 32))
+        if not self.player.dead:
+            self.player.delta_time = delta_time
+            self.player.physics_engines[0].update()
+            self.display_health.update()
+            self.physics_engine_enemy.update()
+            self.player.update()
+            if arcade.check_for_collision_with_list(self.player, self.danger_list):
+                self.player.hurt = True
+            # self.javlin.update()
+            self.player.mouseX = self.x + self.view_left
+            self.player.mouseY = self.y + self.view_bottom
+            playertestposx = (math.floor((self.player.center_x - 32) / 32))
+            playertestposy = (math.floor(self.player.center_y / 32))
 
-        """if self.my_map.layers[2].layer_data[99 - playertestposy][playertestposx] == 0:
-            enemypos = (int(self.enemy.center_x), int(self.enemy.center_y + 32))
-            playerpos = (int(self.player.center_x), int(self.player.center_y + 32))
-            self.path = arcade.astar_calculate_path(enemypos,
-                                                    playerpos,
-                                                    self.barrier_list,
-                                                    diagonal_movement=True)
-        else:
-            enemypos = (int(self.enemy.center_x), int(self.enemy.center_y + 32))
-            playerpos = (int(self.player.center_x + 32), int(self.player.center_y + 32))
-            self.path = arcade.astar_calculate_path(enemypos,
-                                                    playerpos,
-                                                    self.barrier_list,
-                                                    diagonal_movement=True)
-        self.enemy.path = self.pa   th"""
+            """if self.my_map.layers[2].layer_data[99 - playertestposy][playertestposx] == 0:
+                enemypos = (int(self.enemy.center_x), int(self.enemy.center_y + 32))
+                playerpos = (int(self.player.center_x), int(self.player.center_y + 32))
+                self.path = arcade.astar_calculate_path(enemypos,
+                                                        playerpos,
+                                                        self.barrier_list,
+                                                        diagonal_movement=True)
+            else:
+                enemypos = (int(self.enemy.center_x), int(self.enemy.center_y + 32))
+                playerpos = (int(self.player.center_x + 32), int(self.player.center_y + 32))
+                self.path = arcade.astar_calculate_path(enemypos,
+                                                        playerpos,
+                                                        self.barrier_list,
+                                                        diagonal_movement=True)
+            self.enemy.path = self.pa   th"""
 
         self.enemy_list.update()
         self.player_list.update()
