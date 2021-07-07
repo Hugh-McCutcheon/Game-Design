@@ -188,6 +188,14 @@ class PlayerCharacter(arcade.Sprite):
         arcade.draw_line_strip(self.left_arm, grey, 8)
 
 
+        c = [self.javlin.center_x, self.javlin.center_y]
+        a = math.radians(self.javlin.angle+90)
+        f = (c[0] + 64 * math.sin(a), c[1] - 64 * math.cos(a))
+        b = (c[0] - 64 * math.sin(a), c[1] + 64 * math.cos(a))
+
+        arcade.draw_point(f[0], f[1], (255, 0, 0), 10)
+        arcade.draw_point(b[0], b[1], (0, 255, 0), 10)
+
 
 
 
@@ -318,7 +326,7 @@ class PlayerCharacter(arcade.Sprite):
         if self.throw:
 
             if not arcade.check_for_collision_with_list(self.javlin, self.wall_list):
-
+                print('yes')
                 self.T += 0.5 * ((self.JTX - self.JSX)/abs(self.JTX - self.JSX))
 
                 a = IK3.trajectory(Vec2d(self.JSX, self.JSY), Vec2d(self.JTX, self.JTY), self.T)
@@ -328,12 +336,14 @@ class PlayerCharacter(arcade.Sprite):
                 angle = math.atan2((a[1] - self.javlin.center_y), (a[0] - self.javlin.center_x))
                 self.javlin.angle = math.degrees(angle)
             else:
+                print('yes 2')
                 self.throw = False
                 self.JSX = self.javlin.center_x
                 self.JSY = self.javlin.center_y
                 self.JTX = self.JSX
                 self.JTY = self.JSY
                 self.wall_list.insert(0, self.javlin)
+
 
         if self.hurt and self.health[0] > 1:
             self.position = self.checkpoint.position
@@ -343,6 +353,25 @@ class PlayerCharacter(arcade.Sprite):
             self.health[0] -= 1
             self.dead = True
             self.hurt = False
+
+        if self.javlin in self.wall_list:
+
+            if arcade.check_for_collision(self, self.javlin):
+                print('collision check')
+                print(self.javlin.angle)
+
+                c = [self.javlin.center_x, self.javlin.center_y]
+                a = math.radians(self.javlin.angle + 90)
+                f = (c[0] + 64 * math.sin(a), c[1] - 64 * math.cos(a))
+                b = (c[0] - 64 * math.sin(a), c[1] + 64 * math.cos(a))
+                #p = c[0],
+
+
+
+
+
+
+
 
 
 
@@ -389,7 +418,7 @@ class DisplayHealth(arcade.Sprite):
         width = 492*(self.health/self.max_health)
         self.bar.center_x = self.center_x + 60 - (492 - width)/2
         self.bar.center_y = self.center_y
-        #self.bar.width = width
+        self.bar.width = width
         self.bar_list.draw()
         #arcade.draw_scaled_texture_rectangle(self.center_x,self.center_y,arcade.load_texture('Sprites/UI/HealthBarBar.png'))
 
