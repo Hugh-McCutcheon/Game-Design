@@ -9,9 +9,6 @@ import constants
 import player
 import enemy
 
-# I know this is bad but I couldn't think of another way.
-constants.SCREEN_WIDTH = arcade.window_commands.get_display_size()[0]
-constants.SCREEN_HEIGHT = arcade.window_commands.get_display_size()[1]
 
 
 class MyGame(arcade.Window):

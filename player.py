@@ -193,8 +193,8 @@ class PlayerCharacter(arcade.Sprite):
         f = (c[0] + 64 * math.sin(a), c[1] - 64 * math.cos(a))
         b = (c[0] - 64 * math.sin(a), c[1] + 64 * math.cos(a))
 
-        arcade.draw_point(f[0], f[1], (255, 0, 0), 10)
-        arcade.draw_point(b[0], b[1], (0, 255, 0), 10)
+        arcade.draw_point(f[0], f[1], (255, 0, 0), 1)
+        arcade.draw_point(b[0], b[1], (0, 255, 0), 1)
 
 
 
@@ -326,7 +326,6 @@ class PlayerCharacter(arcade.Sprite):
         if self.throw:
 
             if not arcade.check_for_collision_with_list(self.javlin, self.wall_list):
-                print('yes')
                 self.T += 0.5 * ((self.JTX - self.JSX)/abs(self.JTX - self.JSX))
 
                 a = IK3.trajectory(Vec2d(self.JSX, self.JSY), Vec2d(self.JTX, self.JTY), self.T)
@@ -336,7 +335,6 @@ class PlayerCharacter(arcade.Sprite):
                 angle = math.atan2((a[1] - self.javlin.center_y), (a[0] - self.javlin.center_x))
                 self.javlin.angle = math.degrees(angle)
             else:
-                print('yes 2')
                 self.throw = False
                 self.JSX = self.javlin.center_x
                 self.JSY = self.javlin.center_y
@@ -355,16 +353,32 @@ class PlayerCharacter(arcade.Sprite):
             self.hurt = False
 
         if self.javlin in self.wall_list:
-
             if arcade.check_for_collision(self, self.javlin):
                 print('collision check')
-                print(self.javlin.angle)
+
 
                 c = [self.javlin.center_x, self.javlin.center_y]
-                a = math.radians(self.javlin.angle + 90)
+                jav_angle = (self.javlin.angle)
+                a = math.radians(jav_angle)
                 f = (c[0] + 64 * math.sin(a), c[1] - 64 * math.cos(a))
                 b = (c[0] - 64 * math.sin(a), c[1] + 64 * math.cos(a))
-                #p = c[0],
+                self.change_x = 0
+                self.change_y = 0
+                print(a)
+                if (60*(math.pi/180)) <= a <= (120*(math.pi/180)) or (-120*(math.pi/180)) <= a <= (-60*(math.pi/180)):
+                    print('stand on back')
+                    # self.center_x = b[0]
+                    self.center_y = b[1] + 128
+                elif math.pi <= a <= 0:
+                    self.center_x = self.javlin.center_x
+                    y = self.center_y - self.javlin.center_y
+                    print('relative to back stand')
+                    self.center_y = c[1] + (y+70) * math.cos(a)
+                elif -math.pi <= a <= 0:
+                    self.center_x = self.javlin.center_x
+                    y = self.center_y - self.javlin.center_y
+                    print('relative to top stand')
+                    self.center_y = c[1] - (y+70) * math.cos(a)
 
 
 

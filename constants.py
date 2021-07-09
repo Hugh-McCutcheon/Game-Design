@@ -1,8 +1,10 @@
+import arcade
+
 TILE_SPRITE_SCALING = 1
 PLAYER_SCALING = 1
 
-SCREEN_WIDTH = 1920#2430  #1620  # * 2
-SCREEN_HEIGHT = 1080# 1620  #1080  # * 2
+SCREEN_WIDTH = int(arcade.window_commands.get_display_size()[0]/2)
+SCREEN_HEIGHT = int(arcade.window_commands.get_display_size()[1]/2)
 SCREEN_TITLE = "Kinarough"
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * TILE_SPRITE_SCALING)
