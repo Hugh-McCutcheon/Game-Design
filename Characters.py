@@ -1,7 +1,7 @@
 import arcade
 from PIL import Image
 
-scaling = 6  # how much you scailed up the end sprite
+scaling = 6  # how much you scailed up the end sprite (this is determined by the % scaling you used when exporting)
 letter = []
 image = Image.open('Sprites/Medievil text calc.png')
 current_char_width = 0
@@ -137,4 +137,6 @@ def gen_letter_list(string: str = None, s_x: float = 0, s_y: float = 0, scale: f
             spacing = (prev_letter_pos - s_x) + (prev_letter_width / 2 + space_width.width / 2 + gap)
             prev_letter_width = space_width.width
             prev_letter_pos = s_x + spacing
+    # ((letter_list[0].center_x - letter_list[0].width // 2) +
+    # (letter_list[len(letter_list) - 1].center_x + letter_list[len(letter_list) - 1].width // 2))
     return letter_list

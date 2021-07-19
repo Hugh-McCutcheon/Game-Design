@@ -67,6 +67,7 @@ class PlayerCharacter(arcade.Sprite):
         self.throw = False
         self.curve = None
         self.T = 0
+        self.jump_point = (0, 0)
 
         #  other player things
         self.dead = False
@@ -101,6 +102,7 @@ class PlayerCharacter(arcade.Sprite):
             if self.physics_engines[self.level - 1].can_jump():
                 self.change_y = constants.JUMP_SPEED
                 self.space_held = True
+                self.jump_point = (self.center_x, self.center_y)
         elif key == arcade.key.A:
             self.A = True
         elif key == arcade.key.D:
@@ -202,6 +204,9 @@ class PlayerCharacter(arcade.Sprite):
 
 
     def update(self):
+        # sets checkpoints for falling
+        if self.physics_engines[0].can_jump():
+            self.jump_point = (self.center_x, self.center_y)
         # Add some friction
         if self.change_x > constants.FRICTION:
             self.change_x -= constants.FRICTION
@@ -344,7 +349,7 @@ class PlayerCharacter(arcade.Sprite):
 
 
         if self.hurt and self.health[0] > 1:
-            self.position = self.checkpoint.position
+            self.position = self.jump_point
             self.health[0] -= 1
             self.hurt = False
         elif self.hurt:

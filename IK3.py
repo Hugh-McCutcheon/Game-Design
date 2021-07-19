@@ -241,6 +241,8 @@ def text(image):
         else:
             current_char_width += 1
     return tuple(characters)
+
+
 class IK(arcade.Window):
     def __init__(self):
         """
