@@ -364,7 +364,7 @@ class MyGame(arcade.View):
                 text = Characters.gen_letter_list("You finished the tutorial.",
                                                   prompt_x - 549,
                                                   text_prompt_y)
-                text.extend(Characters.gen_letter_list("Head to the exit to play.",
+                text.extend(Characters.gen_letter_list("Press escape to play.",
                                                        prompt_x - 532,
                                                        text_prompt_y - 88))
                 text.draw()
@@ -531,7 +531,7 @@ class MainMenu(arcade.View):
 
 
 def main():
-    window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE)
+    window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE, fullscreen=True)
     window.set_mouse_visible(True)
     window.center_window()
     start_view = MainMenu()
