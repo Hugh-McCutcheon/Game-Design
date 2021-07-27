@@ -32,6 +32,7 @@ class MyGame(arcade.View):
 
         """Tilemap and Level Things"""
         self.wall_list = None
+        self.detail_list = None
         self.map_wall_list = None
         self.stationary_spawn_list = None
         self.physics_engine = None
@@ -80,7 +81,7 @@ class MyGame(arcade.View):
         """Set all of the variables at the start"""
 
         """player things"""
-        arcade.set_background_color(arcade.color.BLACK)
+        arcade.set_background_color(arcade.color.SKY_BLUE)
         #  arcade.play_sound(arcade.load_sound('Sounds/Music Test.wav', True), 0.5, 0, True)
         self.player_list = arcade.SpriteList()
         self.player = player.PlayerCharacter()
@@ -105,6 +106,7 @@ class MyGame(arcade.View):
 
         """Map Things"""
         self.wall_list = arcade.SpriteList()
+        self.detail_list = arcade.SpriteList()
         self.pspawn_list = arcade.SpriteList()
         self.danger_list = arcade.SpriteList()
         self.load_level()
@@ -136,6 +138,16 @@ class MyGame(arcade.View):
                 wall.center_y += map_y  # (map_y - height_diff)
 
             self.wall_list.extend(self.map_wall_list)
+
+            map_detail_list = arcade.tilemap.process_layer(self.my_map,
+                                                           "Detail",
+                                                           constants.TILE_SPRITE_SCALING,
+                                                           use_spatial_hash=False)
+            for detail in map_detail_list:
+                detail.center_x += map_x
+                detail.center_y += map_y
+
+            self.detail_list.extend(map_detail_list)
 
             map_pspawn_list = arcade.tilemap.process_layer(self.my_map,
                                                            'Spawn Layer',
@@ -250,6 +262,7 @@ class MyGame(arcade.View):
         self.player.draw()
         self.enemy_list.draw()
         self.wall_list.draw()
+        self.detail_list.draw()
         self.danger_list.draw()
         # len(self.interactable_list)
         # self.interactable_list.draw()
@@ -450,6 +463,13 @@ class MyGame(arcade.View):
                                                           use_spatial_hash=True)
 
         self.wall_list.extend(self.map_wall_list)
+        self.detail_list = arcade.SpriteList()
+        map_detail_list = arcade.tilemap.process_layer(self.my_map,
+                                                       "Detail",
+                                                       constants.TILE_SPRITE_SCALING,
+                                                       use_spatial_hash=False)
+
+        self.detail_list.extend(map_detail_list)
 
         map_pspawn_list = arcade.tilemap.process_layer(self.my_map,
                                                        'Spawn Layer',

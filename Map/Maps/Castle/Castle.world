@@ -2,31 +2,24 @@
     "maps": [
         {
             "fileName": "CastleStart.tmx",
-            "height": 2560,
-            "width": 4096,
-            "x": 0,
-            "y": 0
+            "height": 1280,
+            "width": 2048,
+            "x": -3200,
+            "y": -256
         },
         {
             "fileName": "Castle1.tmx",
-            "height": 2560,
-            "width": 4096,
-            "x": 4096,
-            "y": 0
+            "height": 1280,
+            "width": 2048,
+            "x": -1152,
+            "y": -256
         },
         {
             "fileName": "Castle2.tmx",
-            "height": 2560,
-            "width": 4096,
-            "x": 0,
-            "y": 2560
-        },
-        {
-            "fileName": "Test Map.tmx",
-            "height": 6400,
-            "width": 6400,
-            "x": -6400,
-            "y": -2176
+            "height": 1280,
+            "width": 2048,
+            "x": -3200,
+            "y": 1024
         }
     ],
     "onlyShowAdjacentMaps": false,
