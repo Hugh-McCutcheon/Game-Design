@@ -1,25 +1,144 @@
 {
     "maps": [
         {
+            "fileName": "CastleSpawn.tmx",
+            "height": 960,
+            "width": 960,
+            "x": 0,
+            "y": 0
+        },
+        {
             "fileName": "CastleStart.tmx",
-            "height": 1280,
-            "width": 2048,
-            "x": -3200,
-            "y": -256
+            "height": 960,
+            "width": 960,
+            "x": 960,
+            "y": 0
         },
         {
             "fileName": "Castle1.tmx",
-            "height": 1280,
-            "width": 2048,
-            "x": -1152,
-            "y": -256
+            "height": 960,
+            "width": 960,
+            "x": 960,
+            "y": 960
         },
         {
             "fileName": "Castle2.tmx",
-            "height": 1280,
-            "width": 2048,
-            "x": -3200,
-            "y": 1024
+            "height": 960,
+            "width": 960,
+            "x": 1920,
+            "y": 960
+        },
+        {
+            "fileName": "Castle3.tmx",
+            "height": 960,
+            "width": 960,
+            "x": 0,
+            "y": 1920
+        },
+        {
+            "fileName": "Castle4.tmx",
+            "height": 960,
+            "width": 960,
+            "x": 960,
+            "y": 1920
+        },
+        {
+            "fileName": "Castle5.tmx",
+            "height": 960,
+            "width": 960,
+            "x": 1920,
+            "y": 1920
+        },
+        {
+            "fileName": "Castle6.tmx",
+            "height": 960,
+            "width": 960,
+            "x": 0,
+            "y": 960
+        },
+        {
+            "fileName": "Castle7.tmx",
+            "height": 960,
+            "width": 960,
+            "x": 2880,
+            "y": 960
+        },
+        {
+            "fileName": "Castle8.tmx",
+            "height": 960,
+            "width": 960,
+            "x": 2880,
+            "y": 1920
+        },
+        {
+            "fileName": "Castle9.tmx",
+            "height": 960,
+            "width": 960,
+            "x": 0,
+            "y": 2880
+        },
+        {
+            "fileName": "Castle10.tmx",
+            "height": 960,
+            "width": 960,
+            "x": 960,
+            "y": 2880
+        },
+        {
+            "fileName": "Castle11.tmx",
+            "height": 960,
+            "width": 960,
+            "x": -960,
+            "y": 2880
+        },
+        {
+            "fileName": "Castle12.tmx",
+            "height": 960,
+            "width": 960,
+            "x": -960,
+            "y": 3840
+        },
+        {
+            "fileName": "Castle13.tmx",
+            "height": 960,
+            "width": 960,
+            "x": -1920,
+            "y": 3840
+        },
+        {
+            "fileName": "Castle14.tmx",
+            "height": 960,
+            "width": 960,
+            "x": -1920,
+            "y": 2880
+        },
+        {
+            "fileName": "Castle15.tmx",
+            "height": 960,
+            "width": 960,
+            "x": -1920,
+            "y": 1920
+        },
+        {
+            "fileName": "Castle16.tmx",
+            "height": 960,
+            "width": 960,
+            "x": -1920,
+            "y": 960
+        },
+        {
+            "fileName": "Castle17.tmx",
+            "height": 960,
+            "width": 960,
+            "x": -2880,
+            "y": 960
+        },
+        {
+            "fileName": "Castle18.tmx",
+            "height": 960,
+            "width": 960,
+            "x": -2880,
+            "y": 1920
         }
     ],
     "onlyShowAdjacentMaps": false,

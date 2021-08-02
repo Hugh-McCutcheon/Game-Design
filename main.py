@@ -81,7 +81,7 @@ class MyGame(arcade.View):
         """Set all of the variables at the start"""
 
         """player things"""
-        arcade.set_background_color(arcade.color.SKY_BLUE)
+        arcade.set_background_color((62, 53, 70))
         #  arcade.play_sound(arcade.load_sound('Sounds/Music Test.wav', True), 0.5, 0, True)
         self.player_list = arcade.SpriteList()
         self.player = player.PlayerCharacter()
@@ -125,7 +125,7 @@ class MyGame(arcade.View):
             height_diff = data['maps'][i]['height'] - data['maps'][0]['height']
             print(height_diff)
             self.my_map = arcade.tilemap.read_tmx(f'Map/Maps/Castle/{cur_map}')
-            # --- Walls ---
+            # --- Tiles ---
 
             # Grab the layer of items we can't move through
 
@@ -138,6 +138,8 @@ class MyGame(arcade.View):
                 wall.center_y += map_y  # (map_y - height_diff)
 
             self.wall_list.extend(self.map_wall_list)
+
+            # Grab the layer of items we can move through
 
             map_detail_list = arcade.tilemap.process_layer(self.my_map,
                                                            "Detail",
@@ -184,7 +186,7 @@ class MyGame(arcade.View):
         self.physics_engine_enemy = arcade.PhysicsEnginePlatformer(self.enemy,
                                                                    self.wall_list,
                                                                    gravity_constant=constants.GRAVITY)
-
+        # make sure everything is the same across all the files
         self.enemy.level_list = self.wall_list
         self.player.physics_engines.append(self.physics_engine)
         self.player.wall_list = self.wall_list
@@ -193,6 +195,7 @@ class MyGame(arcade.View):
         self.enemy.physics_engines.append(self.physics_engine_enemy)
 
     def on_key_press(self, key, modifiers):
+        # detects the key inputs from the player and performs actions depending on what they pressed
         self.player.on_key_press(key)
         self.enemy.on_key_press(key)
         if 49 <= key <= (48 + len(self.pspawn_list)):
@@ -226,11 +229,13 @@ class MyGame(arcade.View):
         self.player.on_mouse_release(x, y, button, modifiers)
 
     def on_draw(self):
+        """Draws everything that is viewed by the player"""
         arcade.start_render()
         self.frame_count += 1
+        # calculates the center of the view
         self.view_center += Vec2d(self.player.center_x - self.view_center.x,
                                   self.player.center_y - self.view_center.y) * .2
-
+        # draws the wall list
         self.wall_list = self.player.wall_list
         self.view_left = (self.view_center.x - constants.SCREEN_WIDTH // 2)
         self.view_left = int(self.view_left)
@@ -252,15 +257,17 @@ class MyGame(arcade.View):
             elif self.view_bottom > (len(self.my_map.layers[0].layer_data) * 64) - constants.SCREEN_HEIGHT:
                 pass
                 #self.view_bottom = (len(self.my_map.layers[0].layer_data) * 64) - constants.SCREEN_HEIGHT"""
-
+            # changes the camera of the game so you can view the character
             arcade.set_viewport(self.view_left,
                                 constants.SCREEN_WIDTH + self.view_left,
                                 self.view_bottom,
                                 constants.SCREEN_HEIGHT + self.view_bottom)
-        # self.background.draw()
+          # self.background.draw()
+        # draws the player
         self.player_list.draw()
         self.player.draw()
         self.enemy_list.draw()
+        # draws some more map stuff
         self.wall_list.draw()
         self.detail_list.draw()
         self.danger_list.draw()
@@ -274,12 +281,14 @@ class MyGame(arcade.View):
             print(self.fps_message)
 
         if self.frame_count % 60 == 0:
+            # how many seconds it was since the last frame (2 weeks)
             self.last_time = time.time()
 
         text1 = Characters.gen_letter_list(str(self.fps_message), self.view_left,
                                            self.view_bottom + constants.SCREEN_HEIGHT - 50)
         text1.draw()
 
+        # this was for calculating what cell the player was in
         with open('Map/Maps/Castle/Castle.world') as castle_world:
             data = json.load(castle_world)
         width = data['maps'][0]['width']
@@ -293,11 +302,14 @@ class MyGame(arcade.View):
             pass
         else:
             pass
+        # updates the leath so it displays the right thing
         self.display_health.health = self.player.health[0]
         self.display_health.max_health = self.player.health[1]
-        arcade.draw_rectangle_outline(x + width / 2, y + height / 2, width, height, (255, 0, 0), 5)
+       # arcade.draw_rectangle_outline(x + width / 2, y + height / 2, width, height, (255, 0, 0), 5)
+        # handles drawing the health
         self.display_health_list.draw()
         self.display_health.draw()
+        # this runs if the player dies
         if self.player.dead:
             self.dead_count += 3
             print(self.dead_count)
@@ -306,7 +318,7 @@ class MyGame(arcade.View):
             if self.dead_count >= 255:
                 game_view = MainMenu()
                 self.window.show_view(game_view)
-
+        # this runs if the tutorial is selected
         if self.tutorial:
             if self.view_left < 0:
                 self.view_left = 0
@@ -446,7 +458,7 @@ class MyGame(arcade.View):
 
     def run_tutorial(self):
         self.setup()
-        arcade.set_background_color(arcade.color.SKY_BLUE)
+        arcade.set_background_color((62, 53, 70))
         self.wall_list = arcade.SpriteList()
         self.pspawn_list = arcade.SpriteList()
         self.danger_list = arcade.SpriteList()
