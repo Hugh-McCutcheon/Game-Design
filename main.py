@@ -193,6 +193,7 @@ class MyGame(arcade.View):
         self.player.my_map = self.my_map
         self.player.spawn_list = self.pspawn_list
         self.enemy.physics_engines.append(self.physics_engine_enemy)
+        print(self.wall_list)
 
     def on_key_press(self, key, modifiers):
         # detects the key inputs from the player and performs actions depending on what they pressed
@@ -320,6 +321,7 @@ class MyGame(arcade.View):
                 self.window.show_view(game_view)
         # this runs if the tutorial is selected
         if self.tutorial:
+            arcade.set_background_color(arcade.color.SKY_BLUE)
             if self.view_left < 0:
                 self.view_left = 0
             elif self.view_left > (len(self.my_map.layers[0].layer_data[0]) * 32) - constants.SCREEN_WIDTH:
@@ -563,7 +565,7 @@ class MainMenu(arcade.View):
 
 
 def main():
-    window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE, fullscreen=True)
+    window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE, fullscreen=False)
     window.set_mouse_visible(True)
     window.center_window()
     start_view = MainMenu()

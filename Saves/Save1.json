@@ -8,6 +8,6 @@
         "amulet_of_health": 0
     },
     "health": {
-        "current_health": 3
+        "current_health": 30000
     }
 }

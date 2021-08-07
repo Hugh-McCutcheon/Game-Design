@@ -57,6 +57,7 @@ class PlayerCharacter(arcade.Sprite):
 
         #  javlin
         self.javlin = Javlin()
+        self.javlin_hitbox = Javlin().hit_point
         self.L = False
         self.R = False
         self.return_jav = False
@@ -111,9 +112,10 @@ class PlayerCharacter(arcade.Sprite):
             self.change_y = 26
 
         if key == arcade.key.E:
+            print(self.javlin.hit_point.position)
             x = math.floor(self.center_x/64)
             y = math.floor(self.center_y/64)
-            if self.my_map.layers[2].layer_data[99-y][x] != 0:
+            if self.my_map.layers[0].layer_data[99-y][x] != 0:
                 print(len(self.my_map.layers[2].layer_data)*64)
                 print(len(self.my_map.layers[2].layer_data[0])*64)
 
@@ -192,10 +194,10 @@ class PlayerCharacter(arcade.Sprite):
 
         c = [self.javlin.center_x, self.javlin.center_y]
         a = math.radians(self.javlin.angle+90)
-        f = (c[0] + 64 * math.sin(a), c[1] - 64 * math.cos(a))
+        f = (c[0] + 34 * math.sin(a), c[1] - 34 * math.cos(a))
         b = (c[0] - 64 * math.sin(a), c[1] + 64 * math.cos(a))
 
-        arcade.draw_point(f[0], f[1], (255, 0, 0), 1)
+        arcade.draw_point(f[0], f[1], (255, 0, 0), 5)
         arcade.draw_point(b[0], b[1], (0, 255, 0), 1)
 
 
@@ -330,7 +332,13 @@ class PlayerCharacter(arcade.Sprite):
 
         if self.throw:
 
-            if not arcade.check_for_collision_with_list(self.javlin, self.wall_list):
+            c = [self.javlin.center_x, self.javlin.center_y]
+            a = math.radians(self.javlin.angle + 90)
+            f = (c[0] + 34 * math.sin(a), c[1] - 34 * math.cos(a))
+
+            self.javlin_hitbox.center_x = f[0]
+            self.javlin_hitbox.center_y = f[1]
+            if not arcade.check_for_collision_with_list(self.javlin_hitbox, self.wall_list):
                 self.T += 0.5 * ((self.JTX - self.JSX)/abs(self.JTX - self.JSX))
 
                 a = IK3.trajectory(Vec2d(self.JSX, self.JSY), Vec2d(self.JTX, self.JTY), self.T)
@@ -413,6 +421,12 @@ class Javlin(arcade.Sprite):
     def __init__(self):
         super().__init__()
         self.texture = arcade.load_texture('Sprites/Player/Javlin.png')
+
+        self.hit_point_list = arcade.SpriteList()
+        self.hit_point = arcade.Sprite('Sprites/Player/Crosshair_Center.png')
+        self.hit_point.center_x = 0
+        self.hit_point.center_y = 0
+        self.hit_point_list.append(self.hit_point)
 
 
 class DisplayHealth(arcade.Sprite):
