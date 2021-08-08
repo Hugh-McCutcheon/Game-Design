@@ -6,7 +6,6 @@ import Characters
 
 import constants
 import player
-import enemy
 
 
 class MyGame(arcade.View):
@@ -17,16 +16,13 @@ class MyGame(arcade.View):
         Initializer
         """
         super().__init__()
-        """Enemy and Player Things"""
+        """Player Things"""
         self.game_view = game_view
         self.player_list = None
         self.player = None
         self.javlin = None
         self.display_health_list = None
         self.display_health = None
-
-        self.enemy_list = None
-        self.enemy = None
 
         """Tilemap and Level Things"""
         self.wall_list = None
@@ -35,7 +31,6 @@ class MyGame(arcade.View):
         self.map_wall_list = None
         self.stationary_spawn_list = None
         self.physics_engine = None
-        self.physics_engine_enemy = None
         self.pspawn_list = None
         self.background = None
         self.interactable_list = None
@@ -95,13 +90,6 @@ class MyGame(arcade.View):
         self.display_health.center_x = 0
         self.display_health.center_y = 0
         self.display_health_list.append(self.display_health)
-
-        """Enemy things"""
-        self.enemy_list = arcade.SpriteList()
-        self.enemy = enemy.Enemy()
-        self.enemy.center_x = constants.SCREEN_WIDTH // 2
-        self.enemy.center_y = constants.SCREEN_HEIGHT // 2
-        self.enemy_list.append(self.enemy)
 
         """Map Things"""
         self.wall_list = arcade.SpriteList()
@@ -194,27 +182,20 @@ class MyGame(arcade.View):
                                                              self.wall_list,
                                                              gravity_constant=constants.GRAVITY)
 
-        self.physics_engine_enemy = arcade.PhysicsEnginePlatformer(self.enemy,
-                                                                   self.wall_list,
-                                                                   gravity_constant=constants.GRAVITY)
         # make sure everything is the same across all the files
-        self.enemy.level_list = self.wall_list
         self.player.physics_engines.append(self.physics_engine)
         self.player.wall_list = self.wall_list
         self.player.my_map = self.my_map
         self.player.spawn_list = self.pspawn_list
-        self.enemy.physics_engines.append(self.physics_engine_enemy)
         print(self.wall_list)
 
     def on_key_press(self, key, modifiers):
         # detects the key inputs from the player and performs actions depending on what they pressed
         self.player.on_key_press(key)
-        self.enemy.on_key_press(key)
         if 49 <= key <= (48 + len(self.pspawn_list)):
             self.player.position = self.pspawn_list[key - 49].position
             self.player.checkpoint = self.pspawn_list[key - 49]
             self.player.checkpoint_num = key - 49
-            self.enemy.position = self.pspawn_list[key - 49].position
         if key == arcade.key.ESCAPE:
             # self.window.close()
             game_view = MainMenu()
@@ -231,7 +212,6 @@ class MyGame(arcade.View):
 
     def on_key_release(self, key, modifiers):
         self.player.on_key_release(key)
-        self.enemy.on_key_release(key)
 
     def on_mouse_press(self, x, y, button, modifiers):
         """ Called whenever the mouse button is clicked. """
@@ -295,7 +275,6 @@ class MyGame(arcade.View):
                 self.player.dead = True
         self.player_list.draw()
         self.player.draw()
-        self.enemy_list.draw()
         # draws some more map stuff
         self.wall_list.draw()
         self.detail_list.draw()
@@ -303,7 +282,6 @@ class MyGame(arcade.View):
         self.danger_list.draw()
         # len(self.interactable_list)
         # self.interactable_list.draw()
-        # self.enemy_list.draw()
         if self.last_time and self.frame_count % 60 == 0:
             fps = 1.0 / (time.time() - self.last_time) * 60
             self.fps_message = f"FPS:{fps:5.0f}"
@@ -435,33 +413,13 @@ class MyGame(arcade.View):
             self.player.delta_time = delta_time
             self.player.physics_engines[0].update()
             self.display_health.update()
-            self.physics_engine_enemy.update()
             self.player.update()
             if arcade.check_for_collision_with_list(self.player, self.danger_list):
                 self.player.hurt = True
             # self.javlin.update()
             self.player.mouseX = self.x + self.view_left
             self.player.mouseY = self.y + self.view_bottom
-            """playertestposx = (math.floor((self.player.center_x - 32) / 32))
-            playertestposy = (math.floor(self.player.center_y / 32))
 
-            if self.my_map.layers[2].layer_data[99 - playertestposy][playertestposx] == 0:
-                enemypos = (int(self.enemy.center_x), int(self.enemy.center_y + 32))
-                playerpos = (int(self.player.center_x), int(self.player.center_y + 32))
-                self.path = arcade.astar_calculate_path(enemypos,
-                                                        playerpos,
-                                                        self.barrier_list,
-                                                        diagonal_movement=True)
-            else:
-                enemypos = (int(self.enemy.center_x), int(self.enemy.center_y + 32))
-                playerpos = (int(self.player.center_x + 32), int(self.player.center_y + 32))
-                self.path = arcade.astar_calculate_path(enemypos,
-                                                        playerpos,
-                                                        self.barrier_list,
-                                                        diagonal_movement=True)
-            self.enemy.path = self.pa   th"""
-
-        self.enemy_list.update()
         self.player_list.update()
         self.player_list.update_animation()
 
@@ -547,17 +505,10 @@ class MyGame(arcade.View):
                                                              self.wall_list,
                                                              gravity_constant=constants.GRAVITY)
 
-        self.physics_engine_enemy = arcade.PhysicsEnginePlatformer(self.enemy,
-                                                                   self.wall_list,
-                                                                   gravity_constant=constants.GRAVITY)
-
-        self.enemy.level_list = self.wall_list
-        # self.player.physics_engines.append(self.physics_engine)
         self.player.physics_engines = (self.physics_engine, 1)
         self.player.wall_list = self.wall_list
         self.player.my_map = self.my_map
         self.player.spawn_list = self.pspawn_list
-        self.enemy.physics_engines.append(self.physics_engine_enemy)
         self.player.position = self.pspawn_list[0].position
 
 

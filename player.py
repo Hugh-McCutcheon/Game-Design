@@ -6,6 +6,8 @@ from pymunk import Vec2d
 import json
 
 ui = arcade.Sprite('Sprites/UI/HUD test.png')
+
+
 class PlayerCharacter(arcade.Sprite):
     """ The player class. """
     def __init__(self):
@@ -34,7 +36,6 @@ class PlayerCharacter(arcade.Sprite):
         self.left_arm = [0, 1, 2]
 
         self.count = 1
-        #self.speed = 300
 
         self.startx = None
         self.starty = None
@@ -82,10 +83,6 @@ class PlayerCharacter(arcade.Sprite):
             self.health = [self.equipmentjson['none'].get('max_health', 3),
                            self.equipmentjson['none'].get('max_health', 3)]
 
-
-
-
-
     def setup(self):
         with open('Saves/Save1.json') as savefile:
             savejson = json.load(savefile)
@@ -96,7 +93,6 @@ class PlayerCharacter(arcade.Sprite):
             self.equipmentjson = json.load(equipmentfile)
         self.health = [savejson['health'].get('current_health', 10),
                        self.equipmentjson[savejson['equipment']['equipped']].get('max_health', 10)]
-
 
     def on_key_press(self, key: int):
         if key == arcade.key.SPACE or key == arcade.key.W:
@@ -117,7 +113,6 @@ class PlayerCharacter(arcade.Sprite):
                 print(len(self.my_map.layers[2].layer_data)*64)
                 print(len(self.my_map.layers[2].layer_data[0])*64)
 
-
     def on_key_release(self, key: int):
         if key == arcade.key.SPACE or key == arcade.key.W:
             self.space_held = False
@@ -128,7 +123,7 @@ class PlayerCharacter(arcade.Sprite):
         elif key == arcade.key.D:
             self.D = False
 
-    def on_mouse_press(self, x, y, button, modifiers):
+    def on_mouse_press(self, button):
         """ Called whenever the mouse button is clicked. """
         if button == arcade.MOUSE_BUTTON_LEFT and self.R:
             self.L = True
@@ -146,28 +141,32 @@ class PlayerCharacter(arcade.Sprite):
             self.return_jav = True
             self.throw = False
 
-    def on_mouse_release(self, x, y, button, modifiers):
+    def on_mouse_release(self, button):
         """ Called whenever the mouse button is clicked. """
         if button == arcade.MOUSE_BUTTON_LEFT:
             self.L = False
         elif button == arcade.MOUSE_BUTTON_RIGHT:
             pass
+
     def limbs(self):
         facing = ['left', 'right']
-        self.right_leg = IK3.IK_solverR(Vec2d(self.center_x, self.center_y+((self.right_foot.y - self.left_foot.y)/5)-7)
-                                        , self.right_foot, 31, 31, facing[self.FACING])
-        self.left_leg = IK3.IK_solverR(Vec2d(self.center_x, self.center_y+((self.right_foot.y - self.left_foot.y)/5)-7)
-                                       , self.left_foot, 31, 31, facing[self.FACING])
+        self.right_leg = IK3.IK_solverR(Vec2d(self.center_x, self.center_y +
+                                              ((self.right_foot.y - self.left_foot.y)/5)-7),
+                                        self.right_foot, 31, 31, facing[self.FACING])
+        self.left_leg = IK3.IK_solverR(Vec2d(self.center_x, self.center_y +
+                                             ((self.right_foot.y - self.left_foot.y)/5)-7),
+                                       self.left_foot, 31, 31, facing[self.FACING])
         facing = ['right', 'left']
         angle = ((math.atan2((self.mouseY-self.javlin.center_y), (self.mouseX - self.javlin.center_x)))+(math.pi/2))
         x = self.javlin.center_x+(32*math.sin(-angle))
         y = self.javlin.center_y+(32*math.cos(-angle))
-        self.right_arm = IK3.IK_solverR(Vec2d(self.center_x, self.center_y+30), Vec2d(x, y), 28, 28, facing[self.FACING])
+        self.right_arm = IK3.IK_solverR(Vec2d(self.center_x, self.center_y+30),
+                                        Vec2d(x, y), 28, 28, facing[self.FACING])
         x = self.javlin.center_x + (32 * math.sin(-angle-math.pi))
         y = self.javlin.center_y + (32 * math.cos(-angle-math.pi))
         self.left_arm = IK3.IK_solverR(Vec2d(self.center_x, self.center_y + 30), Vec2d(x, y), 28, 28,
-                                        facing[self.FACING])
-        #self.left_arm = IK3.IK_solverR()
+                                       facing[self.FACING])
+
     def draw(self):
         global ui
         facing = {
@@ -189,7 +188,6 @@ class PlayerCharacter(arcade.Sprite):
         self.javlin.draw()
         arcade.draw_line_strip(self.left_arm, grey, 8)
 
-
         c = [self.javlin.center_x, self.javlin.center_y]
         a = math.radians(self.javlin.angle+90)
         f = (c[0] + 34 * math.sin(a), c[1] - 34 * math.cos(a))
@@ -197,11 +195,6 @@ class PlayerCharacter(arcade.Sprite):
 
         arcade.draw_point(f[0], f[1], (255, 0, 0), 5)
         arcade.draw_point(b[0], b[1], (0, 255, 0), 1)
-
-
-
-
-
 
     def update(self):
         # sets checkpoints for falling
@@ -214,8 +207,6 @@ class PlayerCharacter(arcade.Sprite):
             self.change_x += constants.FRICTION
         else:
             self.change_x = 0
-
-
 
         # Apply acceleration based on the keys pressed
         if self.A and not self.D:
@@ -342,7 +333,8 @@ class PlayerCharacter(arcade.Sprite):
                 a = IK3.trajectory(Vec2d(self.JSX, self.JSY), Vec2d(self.JTX, self.JTY), self.T)
                 self.javlin.center_x = a[0]
                 self.javlin.center_y = a[1]
-                a = IK3.trajectory(Vec2d(self.JSX, self.JSY), Vec2d(self.JTX, self.JTY), self.T+((self.JTX - self.JSX)/abs(self.JTX - self.JSX)))
+                a = IK3.trajectory(Vec2d(self.JSX, self.JSY), Vec2d(self.JTX, self.JTY),
+                                   self.T+((self.JTX - self.JSX)/abs(self.JTX - self.JSX)))
                 angle = math.atan2((a[1] - self.javlin.center_y), (a[0] - self.javlin.center_x))
                 self.javlin.angle = math.degrees(angle)
             else:
@@ -352,7 +344,6 @@ class PlayerCharacter(arcade.Sprite):
                 self.JTX = self.JSX
                 self.JTY = self.JSY
                 self.wall_list.insert(0, self.javlin)
-
 
         if self.hurt and self.health[0] > 1:
             self.position = self.jump_point
@@ -367,15 +358,13 @@ class PlayerCharacter(arcade.Sprite):
             if arcade.check_for_collision(self, self.javlin):
                 print('collision check')
 
-
                 c = [self.javlin.center_x, self.javlin.center_y]
-                jav_angle = (self.javlin.angle)
+                jav_angle = self.javlin.angle
                 a = math.radians(jav_angle)
-                f = (c[0] + 64 * math.sin(a), c[1] - 64 * math.cos(a))
+                # f = (c[0] + 64 * math.sin(a), c[1] - 64 * math.cos(a))
                 b = (c[0] - 64 * math.sin(a), c[1] + 64 * math.cos(a))
                 self.change_x = 0
                 self.change_y = 0
-                print(a)
                 if (60*(math.pi/180)) <= a <= (120*(math.pi/180)) or (-120*(math.pi/180)) <= a <= (-60*(math.pi/180)):
                     print('stand on back')
                     # self.center_x = b[0]
@@ -390,18 +379,6 @@ class PlayerCharacter(arcade.Sprite):
                     y = self.center_y - self.javlin.center_y
                     print('relative to top stand')
                     self.center_y = c[1] - (y+70) * math.cos(a)
-
-
-
-
-
-
-
-
-
-
-
-
 
     def update_animation(self, delta_time: float = 1 / 60):
         if self.change_x < 0 and self.FACING == 0 or self.change_x > 0 and self.FACING == 1:
@@ -451,6 +428,3 @@ class DisplayHealth(arcade.Sprite):
         self.bar.center_y = self.center_y
         self.bar.width = width
         self.bar_list.draw()
-        #arcade.draw_scaled_texture_rectangle(self.center_x,self.center_y,arcade.load_texture('Sprites/UI/HealthBarBar.png'))
-
-
