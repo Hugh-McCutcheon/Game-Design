@@ -105,14 +105,6 @@ class PlayerCharacter(arcade.Sprite):
         elif key == arcade.key.D:
             self.D = True
 
-        if key == arcade.key.E:
-            print(self.javlin.hit_point.position)
-            x = math.floor(self.center_x/64)
-            y = math.floor(self.center_y/64)
-            if self.my_map.layers[0].layer_data[99-y][x] != 0:
-                print(len(self.my_map.layers[2].layer_data)*64)
-                print(len(self.my_map.layers[2].layer_data[0])*64)
-
     def on_key_release(self, key: int):
         if key == arcade.key.SPACE or key == arcade.key.W:
             self.space_held = False
@@ -149,6 +141,7 @@ class PlayerCharacter(arcade.Sprite):
             pass
 
     def limbs(self):
+        """ Calculates the position of the arms and legs. """
         facing = ['left', 'right']
         self.right_leg = IK3.IK_solverR(Vec2d(self.center_x, self.center_y +
                                               ((self.right_foot.y - self.left_foot.y)/5)-7),
@@ -187,14 +180,6 @@ class PlayerCharacter(arcade.Sprite):
                                                                  mirrored=facing[self.FACING]))
         self.javlin.draw()
         arcade.draw_line_strip(self.left_arm, grey, 8)
-
-        c = [self.javlin.center_x, self.javlin.center_y]
-        a = math.radians(self.javlin.angle+90)
-        f = (c[0] + 34 * math.sin(a), c[1] - 34 * math.cos(a))
-        b = (c[0] - 64 * math.sin(a), c[1] + 64 * math.cos(a))
-
-        arcade.draw_point(f[0], f[1], (255, 0, 0), 5)
-        arcade.draw_point(b[0], b[1], (0, 255, 0), 1)
 
     def update(self):
         # sets checkpoints for falling
@@ -356,8 +341,6 @@ class PlayerCharacter(arcade.Sprite):
 
         if self.javlin in self.wall_list:
             if arcade.check_for_collision(self, self.javlin):
-                print('collision check')
-
                 c = [self.javlin.center_x, self.javlin.center_y]
                 jav_angle = self.javlin.angle
                 a = math.radians(jav_angle)
@@ -366,21 +349,18 @@ class PlayerCharacter(arcade.Sprite):
                 self.change_x = 0
                 self.change_y = 0
                 if (60*(math.pi/180)) <= a <= (120*(math.pi/180)) or (-120*(math.pi/180)) <= a <= (-60*(math.pi/180)):
-                    print('stand on back')
                     # self.center_x = b[0]
                     self.center_y = b[1] + 128
                 elif math.pi <= a <= 0:
                     self.center_x = self.javlin.center_x
                     y = self.center_y - self.javlin.center_y
-                    print('relative to back stand')
                     self.center_y = c[1] + (y+70) * math.cos(a)
                 elif -math.pi <= a <= 0:
                     self.center_x = self.javlin.center_x
                     y = self.center_y - self.javlin.center_y
-                    print('relative to top stand')
                     self.center_y = c[1] - (y+70) * math.cos(a)
 
-    def update_animation(self, delta_time: float = 1 / 60):
+    """def update_animation(self, delta_time: float = 1 / 60):
         if self.change_x < 0 and self.FACING == 0 or self.change_x > 0 and self.FACING == 1:
             self.cur_texture += 1
             if self.cur_texture >= 4 * constants.UPDATES_PER_FRAME:
@@ -389,7 +369,7 @@ class PlayerCharacter(arcade.Sprite):
         elif self.change_x != 0:
             self.cur_texture += 1
             if self.cur_texture >= 4 * constants.UPDATES_PER_FRAME:
-                self.cur_texture = 0
+                self.cur_texture = 0"""
 
 
 class Javlin(arcade.Sprite):
@@ -418,9 +398,6 @@ class DisplayHealth(arcade.Sprite):
         self.bar.center_x = self.center_x
         self.bar.center_y = self.center_y
         self.bar_list.append(self.bar)
-
-    def update(self):
-        pass
 
     def draw(self):
         width = 492*(self.health/self.max_health)

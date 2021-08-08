@@ -50,7 +50,6 @@ class MyGame(arcade.View):
             texture = arcade.load_texture('Sprites/Mouse.png', x=i*306, y=0, width=306, height=198)
             mouse_temp_hold.append(texture)
         self.key_prompt.append(mouse_temp_hold)
-        print(self.key_prompt)
 
         self.cur_key_texture = 0
         """Back End Things"""
@@ -110,8 +109,6 @@ class MyGame(arcade.View):
             cur_map = data['maps'][i]['fileName']
             map_x = data['maps'][i]['x']
             map_y = -data['maps'][i]['y']
-            height_diff = data['maps'][i]['height'] - data['maps'][0]['height']
-            print(height_diff)
             self.my_map = arcade.tilemap.read_tmx(f'Map/Maps/Castle/{cur_map}')
             # --- Tiles ---
 
@@ -187,7 +184,6 @@ class MyGame(arcade.View):
         self.player.wall_list = self.wall_list
         self.player.my_map = self.my_map
         self.player.spawn_list = self.pspawn_list
-        print(self.wall_list)
 
     def on_key_press(self, key, modifiers):
         # detects the key inputs from the player and performs actions depending on what they pressed
@@ -215,10 +211,10 @@ class MyGame(arcade.View):
 
     def on_mouse_press(self, x, y, button, modifiers):
         """ Called whenever the mouse button is clicked. """
-        self.player.on_mouse_press(x, y, button, modifiers)
+        self.player.on_mouse_press(button)
 
     def on_mouse_release(self, x, y, button, modifiers):
-        self.player.on_mouse_release(x, y, button, modifiers)
+        self.player.on_mouse_release(button)
 
     def on_draw(self):
         """Draws everything that is viewed by the player"""
@@ -260,14 +256,13 @@ class MyGame(arcade.View):
             for item in self.item_list:
                 arcade.draw_line(self.player.center_x, self.player.center_y, item.center_x, item.center_y,
                                  (247, 150, 23, 70), 5)
-                print(self.player.center_x, self.player.center_y)
         elif not self.tutorial and len(self.item_list) <= 0:
             arcade.draw_line(self.player.center_x, self.player.center_y, 500, 960,
                              (247, 150, 23, 70), 5)
         elif self.tutorial:
             arcade.draw_line(self.player.center_x, self.player.center_y, 930, 830,
                              (247, 150, 23, 70), 5)
-            if self.player.center_y > 960:
+            if self.player.center_y > 960 and not self.tutorial:
                 text = Characters.gen_letter_list("You WIN!", self.view_center.x - 396/2, self.view_center.y + 150)
                 print((text[0].center_x - text[0].width // 2) +
                       (text[len(text) - 1].center_x + text[len(text) - 1].width // 2))
@@ -320,7 +315,6 @@ class MyGame(arcade.View):
         # this runs if the player dies
         if self.player.dead:
             self.dead_count += 3
-            print(self.dead_count)
             arcade.draw_rectangle_filled(self.view_center.x, self.view_center.y,
                                          constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, (0, 0, 0, self.dead_count))
             if self.dead_count >= 255:
@@ -330,7 +324,6 @@ class MyGame(arcade.View):
 
         if self.tutorial:
             arcade.set_background_color(arcade.color.SKY_BLUE)
-            print(self.player.center_x, self.player.center_y)
 
             if self.view_left < 0:
                 self.view_left = 0
