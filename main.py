@@ -1,10 +1,8 @@
 import arcade
 import time
-import math
 from pymunk import Vec2d
 import json
 import Characters
-import IK3
 
 import constants
 import player
@@ -32,6 +30,7 @@ class MyGame(arcade.View):
 
         """Tilemap and Level Things"""
         self.wall_list = None
+        self.item_list = None
         self.detail_list = None
         self.map_wall_list = None
         self.stationary_spawn_list = None
@@ -106,6 +105,7 @@ class MyGame(arcade.View):
 
         """Map Things"""
         self.wall_list = arcade.SpriteList()
+        self.item_list = arcade.SpriteList()
         self.detail_list = arcade.SpriteList()
         self.pspawn_list = arcade.SpriteList()
         self.danger_list = arcade.SpriteList()
@@ -150,6 +150,17 @@ class MyGame(arcade.View):
                 detail.center_y += map_y
 
             self.detail_list.extend(map_detail_list)
+
+            map_item_list = arcade.tilemap.process_layer(self.my_map,
+                                                         'Items',
+                                                         constants.TILE_SPRITE_SCALING,
+                                                         use_spatial_hash=False)
+
+            for item in map_item_list:
+                item.center_x += map_x
+                item.center_y += map_y
+
+            self.item_list.extend(map_item_list)
 
             map_pspawn_list = arcade.tilemap.process_layer(self.my_map,
                                                            'Spawn Layer',
@@ -242,6 +253,7 @@ class MyGame(arcade.View):
         self.view_left = int(self.view_left)
         self.view_bottom = (self.view_center.y - constants.SCREEN_HEIGHT // 2)
         self.view_bottom = int(self.view_bottom)
+
         if not self.tutorial:
             self.display_health.center_x = self.view_left + self.display_health.width // 2 + 10
             self.display_health.center_y = self.view_bottom+constants.SCREEN_HEIGHT-self.display_health.height//2-10
@@ -263,14 +275,31 @@ class MyGame(arcade.View):
                                 constants.SCREEN_WIDTH + self.view_left,
                                 self.view_bottom,
                                 constants.SCREEN_HEIGHT + self.view_bottom)
-          # self.background.draw()
         # draws the player
+        if not self.tutorial and len(self.item_list) > 0:
+            for item in self.item_list:
+                arcade.draw_line(self.player.center_x, self.player.center_y, item.center_x, item.center_y,
+                                 (247, 150, 23, 70), 5)
+                print(self.player.center_x, self.player.center_y)
+        elif not self.tutorial and len(self.item_list) <= 0:
+            arcade.draw_line(self.player.center_x, self.player.center_y, 500, 960,
+                             (247, 150, 23, 70), 5)
+        elif self.tutorial:
+            arcade.draw_line(self.player.center_x, self.player.center_y, 930, 830,
+                             (247, 150, 23, 70), 5)
+            if self.player.center_y > 960:
+                text = Characters.gen_letter_list("You WIN!", self.view_center.x - 396/2, self.view_center.y + 150)
+                print((text[0].center_x - text[0].width // 2) +
+                      (text[len(text) - 1].center_x + text[len(text) - 1].width // 2))
+                text.draw()
+                self.player.dead = True
         self.player_list.draw()
         self.player.draw()
         self.enemy_list.draw()
         # draws some more map stuff
         self.wall_list.draw()
         self.detail_list.draw()
+        self.item_list.draw()
         self.danger_list.draw()
         # len(self.interactable_list)
         # self.interactable_list.draw()
@@ -306,7 +335,7 @@ class MyGame(arcade.View):
         # updates the leath so it displays the right thing
         self.display_health.health = self.player.health[0]
         self.display_health.max_health = self.player.health[1]
-       # arcade.draw_rectangle_outline(x + width / 2, y + height / 2, width, height, (255, 0, 0), 5)
+        # arcade.draw_rectangle_outline(x + width / 2, y + height / 2, width, height, (255, 0, 0), 5)
         # handles drawing the health
         self.display_health_list.draw()
         self.display_health.draw()
@@ -320,8 +349,11 @@ class MyGame(arcade.View):
                 game_view = MainMenu()
                 self.window.show_view(game_view)
         # this runs if the tutorial is selected
+
         if self.tutorial:
             arcade.set_background_color(arcade.color.SKY_BLUE)
+            print(self.player.center_x, self.player.center_y)
+
             if self.view_left < 0:
                 self.view_left = 0
             elif self.view_left > (len(self.my_map.layers[0].layer_data[0]) * 32) - constants.SCREEN_WIDTH:
@@ -338,12 +370,12 @@ class MyGame(arcade.View):
                                 constants.SCREEN_WIDTH + self.view_left,
                                 self.view_bottom,
                                 constants.SCREEN_HEIGHT + self.view_bottom)
-            UPDATES_PER_FRAME = 10
+            updates_per_frame = 10
             self.cur_key_texture += 1
-            if self.cur_key_texture >= 2 * UPDATES_PER_FRAME:
+            if self.cur_key_texture >= 2 * updates_per_frame:
                 self.cur_key_texture = 0
-            key_prompt = self.key_prompt[0][self.cur_key_texture // UPDATES_PER_FRAME]
-            mouse_prompt = self.key_prompt[1][self.cur_key_texture // UPDATES_PER_FRAME]
+            key_prompt = self.key_prompt[0][self.cur_key_texture // updates_per_frame]
+            mouse_prompt = self.key_prompt[1][self.cur_key_texture // updates_per_frame]
             key_prompt_y = (self.view_bottom + constants.SCREEN_HEIGHT//2) + constants.SCREEN_HEIGHT//4
             text_prompt_y = (self.view_bottom + constants.SCREEN_HEIGHT//2) - constants.SCREEN_HEIGHT // 4
             prompt_x = self.view_left + constants.SCREEN_WIDTH//2
@@ -433,17 +465,22 @@ class MyGame(arcade.View):
         self.player_list.update()
         self.player_list.update_animation()
 
+        for item in self.item_list:
+            if arcade.check_for_collision(self.player, item):
+                self.item_list.remove(item)
+
     def on_mouse_motion(self, x, y, delta_x, delta_y):
         """Called whenever the mouse moves. """
 
         self.x = x
         self.y = y
 
-    def save(self, n: int = 1):
+    def save(self):
         with open("Saves/Save1.json", "r") as jsonFile:
             savedata = json.load(jsonFile)
         # """Location and level information"""
         savedata["location"]["load_position"] = self.player.checkpoint_num
+        savedata["location"]["jump_point"] = self.player.jump_point
 
         # """Equipment and gear information"""
         savedata["equipment"]["equipped"] = self.player.equipped_item

@@ -105,9 +105,6 @@ LETTER_CODE = {
 LETTER_SIZE = 0
 
 
-
-
-
 def gen_letter_list(string: str = None, s_x: float = 0, s_y: float = 0, scale: float = 1, gap: int = 10):
     """
     :param string: The actual string that is being converted

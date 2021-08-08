@@ -1,13 +1,17 @@
 {
     "location": {
         "load_position": 0,
-        "area": "castle"
+        "area": "castle",
+        "jump_point": [
+            1552.0,
+            288.0
+        ]
     },
     "equipment": {
         "equipped": "none",
         "amulet_of_health": 0
     },
     "health": {
-        "current_health": 30000
+        "current_health": 10
     }
 }

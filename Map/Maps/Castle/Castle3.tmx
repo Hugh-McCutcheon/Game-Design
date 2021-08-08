@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="1">
+<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="2">
  <tileset firstgid="1" source="../../Tile Sets/Grass Wireframe.tsx"/>
  <tileset firstgid="17" source="../../Tile Sets/1.3 bricks.tsx"/>
+ <tileset firstgid="1193" source="../../Tile Sets/Items.tsx"/>
  <layer id="1" name="Wire" width="30" height="30">
   <data encoding="csv">
 2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,2,2,2,1,1,1,1,1,1,1,2,2,2,2,2,
@@ -21,8 +22,8 @@
 2,2,2,2,2,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 2,2,15,16,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 2,12,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-2,1,9,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-2,1,9,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 2,2,2,2,1,1,1,1,1,1,1,1,2,2,2,1,1,1,2,2,2,2,2,2,2,2,2,2,2,4,
 2,2,2,2,2,2,4,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,
@@ -104,4 +105,7 @@
 0,0,0,0,0,0,0,0,0,471,0,466,0,0,0,471,0,0,0,0,0,0,0,0,466,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="5" name="Items">
+  <object id="1" gid="1193" x="64" y="608" width="32" height="32"/>
+ </objectgroup>
 </map>

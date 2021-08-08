@@ -1,7 +1,6 @@
 import math
 import arcade
 from pymunk import Vec2d
-from PIL import Image
 
 white = (255, 255, 255)
 
@@ -11,7 +10,7 @@ def parabola(f_: Vec2d = (0, 0), t_: Vec2d = (1, 0), x_: float = 0):
     f = f_  # the starting position
     t = t_  # the target position
 
-    s = ((f.y+t.y)/2)+1*((f.x+t.x)/200)  # the y position that the graph apexes at
+    # s = ((f.y+t.y)/2)+1*((f.x+t.x)/200)  # the y position that the graph apexes at
     g = Vec2d(((f.x+t.x)/2), ((f.y+t.y)/2)+15)  # the apex of the graph
     a1 = -f.x**2+g.x**2
     b1 = -f.x+g.x
@@ -33,7 +32,7 @@ def trajectory(s_: Vec2d = (0, 0), e_: Vec2d = (1, 1), t_: float = 0):
     s = s_
     e = e_
     alpha = math.atan((s.y - e.y)/(s.x-e.x))
-    h = 0
+    # h = 0
     g = 1
     v = 50
     t = t_
@@ -41,20 +40,16 @@ def trajectory(s_: Vec2d = (0, 0), e_: Vec2d = (1, 1), t_: float = 0):
     b = s.y+v*t*math.sin(alpha)-1/2*g*t**2
     return Vec2d(a, b)
 
+
 """
 def IK_solverR(s_, h_, c_, a_, f_):
     f = f_  # the direction that the bend should be pointing
-
     S = s_
     H = h_
     c = c_
     a = a_
     b = math.sqrt((H.x - S.x) ** 2 + (H.y - S.y) ** 2)
-
-
     #B=math.pi-beta
-
-
     if Vec2d.get_distance(S, H) > c+a:# or S.x == H.x:
         if (H.x-S.x) == 0:
             A1 = math.pi/2
@@ -62,7 +57,6 @@ def IK_solverR(s_, h_, c_, a_, f_):
         else:
             A1 = math.atan((H.y - S.y) / (H.x-S.x))
         A = A1  # to flip do A1-alpha
-
     else:
         A1 = math.atan((H.y - S.y) / (H.x - S.x))
         alpha = math.acos((b ** 2 + c ** 2 - a ** 2) / (2 * b * c))
@@ -73,8 +67,6 @@ def IK_solverR(s_, h_, c_, a_, f_):
             'left': A1 - alpha
         }
         A = facing[f]  # to flip do A1-alpha
-
-
     if S.x >= H.x:
         x3 = S.x-c*math.cos(A)
         y3 = S.y-c*math.sin(A)
@@ -82,16 +74,12 @@ def IK_solverR(s_, h_, c_, a_, f_):
         x3 = S.x + c * math.cos(A)
         y3 = S.y + c * math.sin(A)
     E = Vec2d(x3, y3)
-
-
-
     point_list = [S, E, H]
     return point_list"""
 
 
 def IK_solverR(s_, h_, c_, a_, f_):
     """
-
     :param s_: The starting Point
     :param h_: The target point
     :param c_: The length of the firts segment
@@ -101,58 +89,55 @@ def IK_solverR(s_, h_, c_, a_, f_):
     """
     f = f_  # the direction that the bend should be pointing
 
-    S = s_
-    H = h_
+    s = s_
+    h = h_
     c = c_
     a = a_
-    b = math.sqrt((H.x - S.x) ** 2 + (H.y - S.y) ** 2)
+    b = math.sqrt((h.x - s.x) ** 2 + (h.y - s.y) ** 2)
 
+    # b=math.pi-beta
 
-    #B=math.pi-beta
-
-
-    if Vec2d.get_distance(S, H) > c+a or S.x == H.x:
-        if (H.x-S.x) == 0:
-            A1 = math.pi/2
-            B = 0
+    if Vec2d.get_distance(s, h) > c+a or s.x == h.x:
+        if (h.x-s.x) == 0:
+            a1 = math.pi/2
+            b = 0
         else:
-            A1 = math.atan((H.y - S.y) / (H.x-S.x))
-            B = 0
-        A = A1  # to flip do A1-alpha
-        j = A1
+            a1 = math.atan((h.y - s.y) / (h.x-s.x))
+            b = 0
+        a2 = a1  # to flip do A1-alpha
+        # j = a1
     else:
-        A1 = math.atan((H.y - S.y) / (H.x - S.x))
+        a1 = math.atan((h.y - s.y) / (h.x - s.x))
         alpha = math.acos((b ** 2 + c ** 2 - a ** 2) / (2 * b * c))
         beta = math.acos((a ** 2 + c ** 2 - b ** 2) / (2 * a * c))
-        B = beta-math.pi
+        b = beta-math.pi
         facing = {
-            'right': alpha + A1,
-            'left': A1 - alpha
+            'right': alpha + a1,
+            'left': a1 - alpha
         }
 
-        A = facing[f]  # to flip do A1-alpha
+        a2 = facing[f]  # to flip do A1-alpha
     facingj = {
-        'right': B + A,
-        'left': A - B
+        'right': b + a2,
+        'left': a2 - b
     }
     j = facingj[f]
-    if S.x >= H.x:
-        x3 = S.x-c*math.cos(A)
-        y3 = S.y-c*math.sin(A)
+    if s.x >= h.x:
+        x3 = s.x-c*math.cos(a2)
+        y3 = s.y-c*math.sin(a2)
     else:
-        x3 = S.x + c * math.cos(A)
-        y3 = S.y + c * math.sin(A)
-    E = Vec2d(x3, y3)
-    if S.x >= H.x:
-        x4 = E.x-a*math.cos(j)
-        y4 = E.y-a*math.sin(j)
+        x3 = s.x + c * math.cos(a2)
+        y3 = s.y + c * math.sin(a2)
+    e = Vec2d(x3, y3)
+    if s.x >= h.x:
+        x4 = e.x-a*math.cos(j)
+        y4 = e.y-a*math.sin(j)
     else:
-        x4 = E.x + a * math.cos(j)
-        y4 = E.y + a * math.sin(j)
+        x4 = e.x + a * math.cos(j)
+        y4 = e.y + a * math.sin(j)
     r = Vec2d(x4, y4)
 
-
-    point_list = [S, E, r]
+    point_list = [s, e, r]
     return point_list
 
 
@@ -166,16 +151,17 @@ def foot_target(o_: Vec2d = (0, 0), d_: float = 16, h_: float = 10, p_: float = 
     return g
 
 
-def simple_ik(Joint0_: Vec2d=(0,0), Joint1_: Vec2d = (0,0), Hand_: Vec2d = (0,0), Target_: Vec2d = (0,0)):
-    Joint0 = Joint0_
+"""
+def simple_ik(joint0_: Vec2d=(0,0), Joint1_: Vec2d = (0,0), Hand_: Vec2d = (0,0), Target_: Vec2d = (0,0)):
+    joint0 = joint0_
     Joint1 = Joint1_
     Hand = Hand_
     Target = Target_
-    length0 = Vec2d.get_distance(Joint0, Joint1)
+    length0 = Vec2d.get_distance(joint0, Joint1)
     length1 = Vec2d.get_distance(Joint1, Hand)
     # update
-    length2 = Vec2d.get_distance(Joint0, Target)
-    diff = Target-Joint0
+    length2 = Vec2d.get_distance(joint0, Target)
+    diff = Target-joint0
     atan = math.atan2(diff.y, diff.x)
 
     if length0+length1 < length2:
@@ -184,63 +170,35 @@ def simple_ik(Joint0_: Vec2d=(0,0), Joint1_: Vec2d = (0,0), Hand_: Vec2d = (0,0)
 
     else:
 
-        """alpha"""
+        #alpha
         cosAngle0 = ((length2 ** 2+length0**2-length1**2)/(2*length2*length0))
         angle0 = math.acos(cosAngle0)
-        """beta"""
+        #beta
         cosAngle1 = ((length1**2+length0**2-length2**2)/(2*length1*length0))
         angle1 = math.acos(cosAngle1)
-        """angle from joint0 and target"""
+        #angle from joint0 and target
 
         jointAngle0 = atan - angle0
         jointAngle1 = math.pi - angle1
 
 
 
-    Joint0 = Joint0.rotated(jointAngle0)
-    Joint1 = Joint0 + Joint1.rotated(jointAngle0)
+    joint0 = joint0.rotated(jointAngle0)
+    Joint1 = joint0 + Joint1.rotated(jointAngle0)
     Hand = Joint1 + Hand.rotated(jointAngle1)
-    a = Joint0
+    a = joint0
     b = Joint1
     c = Hand
     IK_list = [a, b, c]
-    return IK_list
+    return IK_list"""
 
 
 def clip(surf, x, y, x_size, y_size):
     handle_surf = surf.copy()
-    clipR = arcade.Rect(x, y, x_size, y_size)
-    handle_surf.set_clip(clipR)
+    clipr = arcade.Rect(x, y, x_size, y_size)
+    handle_surf.set_clip(clipr)
     image = surf.subsurface(handle_surf.get_clip())
     return image.copy()
-
-
-def text(image):
-    """
-    :param Image image:
-    :return:
-    """
-    global characters
-    spacing = 1
-    character_order = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-    current_char_width = 0
-    characters = []
-    character_count = 0
-    for x in range(image.width):
-        c = image.getpixel((x, 0))
-        if c == (127, 127, 127):
-            """char_img = clip(image, x-current_char_width, 0, current_char_width, image.height)
-            characters[character_order[character_count//2]] = char_img.copy()"""
-            character_count += 1
-            print(f'What position the character is in: {character_count}')
-            print(f'How wide the character is: {current_char_width}')
-            print(f'The position of the x is: {x-current_char_width+1}, width={current_char_width}')
-            texture = arcade.load_texture('Sprites/Medievil text.png', x=x-current_char_width+1, y=0, width=current_char_width, height=image.height)
-            characters.append(texture)
-            current_char_width = 0
-        else:
-            current_char_width += 1
-    return tuple(characters)
 
 
 class IK(arcade.Window):
@@ -283,13 +241,9 @@ class IK(arcade.Window):
         self.mouseY = 40
         self.mouse = Vec2d(150, 150)
 
-
         self.move = False
 
-
     def on_draw(self):
-
-        #global newpoint
         arcade.start_render()
         points = IK_solverR(self.joint2, self.mouse, 160, 160, 'right')
         npoint = Vec2d(self.mouseX+16, self.mouseY-32)
@@ -297,7 +251,7 @@ class IK(arcade.Window):
         arcade.draw_point(npoint.x, npoint.y, white, 5)
         arcade.draw_point(self.X, self.Y, white, 5)
         arcade.draw_points((points[1], points[2]), white, 50)
-        speed = 100
+        # speed = 100
         arcade.draw_text(str(self.Y), 100, 100, white)
 
     def on_update(self, delta_time: float):
@@ -335,8 +289,8 @@ class IK(arcade.Window):
             self.direction_y = (self.endy-self.starty)/self.distance
             self.X = self.startx
             self.Y = self.starty
-        if key == arcade.key.E:
-            e = text(Image.open('Sprites/Medievil text.png'))
+        """if key == arcade.key.E:
+            e = text(Image.open('Sprites/Medievil text.png'))"""
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         self.mouseX = x

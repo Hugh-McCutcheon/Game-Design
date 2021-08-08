@@ -90,12 +90,12 @@ class PlayerCharacter(arcade.Sprite):
         with open('Saves/Save1.json') as savefile:
             savejson = json.load(savefile)
 
-        self.position = self.spawn_list[savejson['location']['load_position']].position
+        self.position = savejson['location']['jump_point']
         self.checkpoint = self.spawn_list[savejson['location']['load_position']]
         with open('equipment_data.json') as equipmentfile:
             self.equipmentjson = json.load(equipmentfile)
-        self.health = [savejson['health'].get('current_health', 3),
-                       self.equipmentjson[savejson['equipment']['equipped']].get('max_health', 3)]
+        self.health = [savejson['health'].get('current_health', 10),
+                       self.equipmentjson[savejson['equipment']['equipped']].get('max_health', 10)]
 
 
     def on_key_press(self, key: int):
@@ -108,8 +108,6 @@ class PlayerCharacter(arcade.Sprite):
             self.A = True
         elif key == arcade.key.D:
             self.D = True
-        elif key == arcade.key.ENTER:
-            self.change_y = 26
 
         if key == arcade.key.E:
             print(self.javlin.hit_point.position)

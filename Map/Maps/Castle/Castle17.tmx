@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="1">
+<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="2">
  <tileset firstgid="1" source="../../Tile Sets/Grass Wireframe.tsx"/>
  <tileset firstgid="17" source="../../Tile Sets/1.3 bricks.tsx"/>
+ <tileset firstgid="1193" source="../../Tile Sets/Items.tsx"/>
  <layer id="1" name="Wire" width="30" height="30">
   <data encoding="csv">
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
@@ -36,6 +37,9 @@
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
 </data>
  </layer>
+ <objectgroup id="8" name="Items">
+  <object id="1" gid="1195" x="128" y="736" width="32" height="32"/>
+ </objectgroup>
  <layer id="2" name="Dangers" width="30" height="30">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

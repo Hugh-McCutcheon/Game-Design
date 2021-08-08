@@ -1,6 +1,7 @@
 import arcade
 import constants
 
+
 class Enemy(arcade.Sprite):
     def __init__(self):
         super().__init__()
@@ -34,9 +35,7 @@ class Enemy(arcade.Sprite):
         elif key == arcade.key.RIGHT:
             self.D = False
 
-
     def update(self):
-
 
         if self.change_x > constants.FRICTION:
             self.change_x -= constants.FRICTION
