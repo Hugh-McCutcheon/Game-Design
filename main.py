@@ -197,8 +197,6 @@ class MyGame(arcade.View):
             game_view = MainMenu()
 
             self.window.show_view(game_view)
-        elif key == arcade.key.LSHIFT:
-            self.javlin.position = self.player.position
 
         if key == arcade.key.ENTER:
             self.save()

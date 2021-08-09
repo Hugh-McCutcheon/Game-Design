@@ -99,11 +99,13 @@ class PlayerCharacter(arcade.Sprite):
             if self.physics_engines[self.level - 1].can_jump():
                 self.change_y = constants.JUMP_SPEED
                 self.space_held = True
-                self.jump_point = (self.center_x, self.center_y)
         elif key == arcade.key.A:
             self.A = True
         elif key == arcade.key.D:
             self.D = True
+
+        if key == arcade.key.ENTER and self.physics_engines[self.level - 1].can_jump():
+            self.jump_point = (self.center_x, self.center_y)
 
     def on_key_release(self, key: int):
         if key == arcade.key.SPACE or key == arcade.key.W:
@@ -182,9 +184,6 @@ class PlayerCharacter(arcade.Sprite):
         arcade.draw_line_strip(self.left_arm, grey, 8)
 
     def update(self):
-        # sets checkpoints for falling
-        if self.physics_engines[0].can_jump():
-            self.jump_point = (self.center_x, self.center_y)
         # Add some friction
         if self.change_x > constants.FRICTION:
             self.change_x -= constants.FRICTION
