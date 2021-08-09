@@ -139,6 +139,13 @@
             "width": 960,
             "x": -2880,
             "y": 1920
+        },
+        {
+            "fileName": "CastleExit.tmx",
+            "height": 960,
+            "width": 960,
+            "x": 0,
+            "y": -960
         }
     ],
     "onlyShowAdjacentMaps": false,

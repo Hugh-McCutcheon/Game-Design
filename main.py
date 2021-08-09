@@ -544,7 +544,7 @@ class MainMenu(arcade.View):
 
 
 def main():
-    window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE, fullscreen=False)
+    window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE, fullscreen=True)
     window.set_mouse_visible(True)
     window.center_window()
     start_view = MainMenu()
