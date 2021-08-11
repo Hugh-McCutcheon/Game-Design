@@ -130,10 +130,12 @@ class PlayerCharacter(arcade.Sprite):
             self.JTX = self.mouseX
             self.JTY = self.mouseY
             self.throw = True
+            arcade.play_sound(arcade.load_sound('Sounds/Throw.m4a', True), 0.5, 0)
         elif button == arcade.MOUSE_BUTTON_RIGHT:
             self.T = 0
             if self.javlin in self.wall_list:
                 self.wall_list.remove(self.javlin)
+                arcade.play_sound(arcade.load_sound('Sounds/Retrieve.m4a', True), 0.5, 0)
 
             self.return_jav = True
             self.throw = False

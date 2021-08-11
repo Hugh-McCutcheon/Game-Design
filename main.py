@@ -233,18 +233,6 @@ class MyGame(arcade.View):
             self.display_health.center_x = self.view_left + self.display_health.width // 2 + 10
             self.display_health.center_y = self.view_bottom+constants.SCREEN_HEIGHT-self.display_health.height//2-10
 
-            """if self.view_left < 0:
-                pass
-                #self.view_left = 0
-            elif self.view_left > (len(self.my_map.layers[0].layer_data[0]) * 64) - constants.SCREEN_WIDTH:
-                pass
-                #self.view_left = (len(self.my_map.layers[0].layer_data[0])*64)-constants.SCREEN_WIDTH
-            if self.view_bottom < 0:
-                pass
-                #self.view_bottom = 0
-            elif self.view_bottom > (len(self.my_map.layers[0].layer_data) * 64) - constants.SCREEN_HEIGHT:
-                pass
-                #self.view_bottom = (len(self.my_map.layers[0].layer_data) * 64) - constants.SCREEN_HEIGHT"""
             # changes the camera of the game so you can view the character
             arcade.set_viewport(self.view_left,
                                 constants.SCREEN_WIDTH + self.view_left,
@@ -263,7 +251,11 @@ class MyGame(arcade.View):
                 print((text[0].center_x - text[0].width // 2) +
                       (text[len(text) - 1].center_x + text[len(text) - 1].width // 2))
                 text.draw()
+                self.player.health[0] = 10
+                self.player.jump_point = (1552, 288)
+                self.save()
                 self.player.dead = True
+
         elif self.tutorial:
             arcade.draw_line(self.player.center_x, self.player.center_y, 930, 830,
                              (247, 150, 23, 70), 5)
@@ -286,10 +278,6 @@ class MyGame(arcade.View):
         if self.frame_count % 60 == 0:
             # how many seconds it was since the last frame (2 weeks)
             self.last_time = time.time()
-
-        text1 = Characters.gen_letter_list(str(self.fps_message), self.view_left,
-                                           self.view_bottom + constants.SCREEN_HEIGHT - 50)
-        text1.draw()
 
         # this was for calculating what cell the player was in
         with open('Map/Maps/Castle/Castle.world') as castle_world:
@@ -354,15 +342,17 @@ class MyGame(arcade.View):
                 arcade.draw_scaled_texture_rectangle(prompt_x,
                                                      key_prompt_y,
                                                      key_prompt)
-                text = Characters.gen_letter_list("A, S, and D to move.",
-                                                  prompt_x-411,
+                text = Characters.gen_letter_list("W, A, S, and D to move.",
+                                                  prompt_x-474,
                                                   text_prompt_y)
+
                 text.extend(Characters.gen_letter_list("Space or W to jump.",
                                                        prompt_x-424,
                                                        text_prompt_y-88))
-                text.extend(Characters.gen_letter_list("Hold Space or W to jump higher.",
-                                                       prompt_x-679,
+                text.extend(Characters.gen_letter_list("Follow the gold line.",
+                                                       prompt_x - 425,
                                                        text_prompt_y - 176))
+
                 text.draw()
             elif self.player.center_x < 1400 and self.player.center_y < 600:
                 text = Characters.gen_letter_list("Don't fall onto dangerous obstacles.",
@@ -371,9 +361,10 @@ class MyGame(arcade.View):
                 text.extend(Characters.gen_letter_list("Doing so will make you lose health!",
                                                        prompt_x - 732,
                                                        text_prompt_y - 88))
-                text.extend(Characters.gen_letter_list("Falling in here will hurt you!",
-                                                       prompt_x - 611,
+                text.extend(Characters.gen_letter_list("Press ENTER to set a checkpoint",
+                                                       prompt_x - 703,
                                                        text_prompt_y - 176))
+
                 text.draw()
             elif self.player.center_x < 2000 and self.player.center_y < 670:
                 arcade.draw_scaled_texture_rectangle(prompt_x,
@@ -395,8 +386,9 @@ class MyGame(arcade.View):
                                                   prompt_x - 549,
                                                   text_prompt_y)
                 text.extend(Characters.gen_letter_list("Press escape to play.",
-                                                       prompt_x - 532,
+                                                       prompt_x - 455,
                                                        text_prompt_y - 88))
+
                 text.draw()
 
                 # tell player to go to exit
@@ -526,10 +518,9 @@ class MainMenu(arcade.View):
                                              constants.SCREEN_HEIGHT // 2,
                                              arcade.load_texture('Sprites/Main Menu.png'),
                                              constants.SCREEN_WIDTH / 3240)
-        text = Characters.gen_letter_list("Kinarough",
-                                          constants.SCREEN_WIDTH//2 - 218, constants.SCREEN_HEIGHT//2)
-        text.extend(Characters.gen_letter_list("LMB: Load Game  RMB: Play Tutorial",
-                                               constants.SCREEN_WIDTH//2 - 760, constants.SCREEN_HEIGHT//2-88))
+
+        text = (Characters.gen_letter_list("LMB: Load Game  RMB: Play Tutorial",
+                                           constants.SCREEN_WIDTH//2 - 760, constants.SCREEN_HEIGHT//2-88))
         text.draw()
 
     def on_key_press(self, key: int, modifiers: int):
