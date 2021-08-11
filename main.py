@@ -101,6 +101,7 @@ class MyGame(arcade.View):
         self.player.danger_list = self.danger_list
 
     def load_level(self):
+        """ Turns the world file into maps and adds them to the lists """
         # Read in the tiled map
         with open('Map/Maps/Castle/Castle.world') as castle_world:
             data = json.load(castle_world)
@@ -186,12 +187,13 @@ class MyGame(arcade.View):
         self.player.spawn_list = self.pspawn_list
 
     def on_key_press(self, key, modifiers):
+        """ Used when the player inputs a key """
         # detects the key inputs from the player and performs actions depending on what they pressed
         self.player.on_key_press(key)
-        if 49 <= key <= (48 + len(self.pspawn_list)):
+        """if 49 <= key <= (48 + len(self.pspawn_list)):
             self.player.position = self.pspawn_list[key - 49].position
             self.player.checkpoint = self.pspawn_list[key - 49]
-            self.player.checkpoint_num = key - 49
+            self.player.checkpoint_num = key - 49"""
         if key == arcade.key.ESCAPE:
             # self.window.close()
             game_view = MainMenu()
@@ -201,10 +203,8 @@ class MyGame(arcade.View):
         if key == arcade.key.ENTER:
             self.save()
 
-        if key == arcade.key.UP:
-            self.player.health[0] += 1
-
     def on_key_release(self, key, modifiers):
+        """ Called whenever a key is released """
         self.player.on_key_release(key)
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -212,10 +212,11 @@ class MyGame(arcade.View):
         self.player.on_mouse_press(button)
 
     def on_mouse_release(self, x, y, button, modifiers):
+        """ Called whenever the mouse button is released. """
         self.player.on_mouse_release(button)
 
     def on_draw(self):
-        """Draws everything that is viewed by the player"""
+        """ Draws everything that is viewed by the player """
         arcade.start_render()
         self.frame_count += 1
         # calculates the center of the view
@@ -257,15 +258,16 @@ class MyGame(arcade.View):
         elif not self.tutorial and len(self.item_list) <= 0:
             arcade.draw_line(self.player.center_x, self.player.center_y, 500, 960,
                              (247, 150, 23, 70), 5)
-        elif self.tutorial:
-            arcade.draw_line(self.player.center_x, self.player.center_y, 930, 830,
-                             (247, 150, 23, 70), 5)
             if self.player.center_y > 960 and not self.tutorial:
                 text = Characters.gen_letter_list("You WIN!", self.view_center.x - 396/2, self.view_center.y + 150)
                 print((text[0].center_x - text[0].width // 2) +
                       (text[len(text) - 1].center_x + text[len(text) - 1].width // 2))
                 text.draw()
                 self.player.dead = True
+        elif self.tutorial:
+            arcade.draw_line(self.player.center_x, self.player.center_y, 930, 830,
+                             (247, 150, 23, 70), 5)
+
         self.player_list.draw()
         self.player.draw()
         # draws some more map stuff
@@ -425,6 +427,7 @@ class MyGame(arcade.View):
         self.y = y
 
     def save(self):
+        """ added the save data to a JSON file """
         with open("Saves/Save1.json", "r") as jsonFile:
             savedata = json.load(jsonFile)
         # """Location and level information"""
@@ -441,10 +444,12 @@ class MyGame(arcade.View):
             json.dump(savedata, jsonFile, indent=4)
 
     def load_save(self):
+        """ Runs the setups after a save load """
         self.setup()
         self.player.setup()
 
     def run_tutorial(self):
+        """ What happens when the plater runs the tutorial """
         self.setup()
         arcade.set_background_color((62, 53, 70))
         self.wall_list = arcade.SpriteList()
@@ -504,14 +509,17 @@ class MyGame(arcade.View):
 
 
 class MainMenu(arcade.View):
+    """ The class of te main menu """
     def __init__(self):
         super().__init__()
 
     def on_show(self):
+        """ Run when the plater is first shown the main menu """
         arcade.set_background_color(arcade.color.BLACK)
         arcade.set_viewport(0, constants.SCREEN_WIDTH, 0, constants.SCREEN_HEIGHT)
 
     def on_draw(self):
+        """ Draws everything seen by the player """
         arcade.start_render()
 
         arcade.draw_scaled_texture_rectangle(constants.SCREEN_WIDTH // 2,
@@ -525,10 +533,12 @@ class MainMenu(arcade.View):
         text.draw()
 
     def on_key_press(self, key: int, modifiers: int):
+        """ Detecs then the player presses escape """
         if key == arcade.key.ESCAPE:
             self.window.close()
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        """ Detecs then the player clickes """
         if button == arcade.MOUSE_BUTTON_LEFT:
 
             game_view = MyGame(self)
@@ -544,6 +554,7 @@ class MainMenu(arcade.View):
 
 
 def main():
+    """ Runs the game """
     window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE, fullscreen=True)
     window.set_mouse_visible(True)
     window.center_window()

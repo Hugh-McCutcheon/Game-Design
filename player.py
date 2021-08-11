@@ -84,6 +84,7 @@ class PlayerCharacter(arcade.Sprite):
                            self.equipmentjson['none'].get('max_health', 3)]
 
     def setup(self):
+        """ Gets the player setup"""
         with open('Saves/Save1.json') as savefile:
             savejson = json.load(savefile)
 
@@ -95,6 +96,7 @@ class PlayerCharacter(arcade.Sprite):
                        self.equipmentjson[savejson['equipment']['equipped']].get('max_health', 10)]
 
     def on_key_press(self, key: int):
+        """ Detects when the player presses a key """
         if key == arcade.key.SPACE or key == arcade.key.W:
             if self.physics_engines[self.level - 1].can_jump():
                 self.change_y = constants.JUMP_SPEED
@@ -108,6 +110,7 @@ class PlayerCharacter(arcade.Sprite):
             self.jump_point = (self.center_x, self.center_y)
 
     def on_key_release(self, key: int):
+        """ Detects when the player releases a key """
         if key == arcade.key.SPACE or key == arcade.key.W:
             self.space_held = False
             if self.change_y > 0:
@@ -163,6 +166,7 @@ class PlayerCharacter(arcade.Sprite):
                                        facing[self.FACING])
 
     def draw(self):
+        """ Draws the things relating to the player """
         global ui
         facing = {
             0: True,
@@ -170,6 +174,7 @@ class PlayerCharacter(arcade.Sprite):
         }
         grey = arcade.color.BATTLESHIP_GREY
         darkbrown = arcade.color.DARK_BROWN
+        # the following errors are nesicary for the game to run and I can't figure out how to make them not appear
         arcade.draw_line_strip((self.right_leg[0], self.right_leg[1]), grey, 6 * 2)
         arcade.draw_line_strip((self.right_leg[1], self.right_leg[2]), darkbrown, 4 * 2)
 
@@ -184,6 +189,7 @@ class PlayerCharacter(arcade.Sprite):
         arcade.draw_line_strip(self.left_arm, grey, 8)
 
     def update(self):
+        """ Updates the player related things """
         # Add some friction
         if self.change_x > constants.FRICTION:
             self.change_x -= constants.FRICTION
@@ -372,6 +378,7 @@ class PlayerCharacter(arcade.Sprite):
 
 
 class Javlin(arcade.Sprite):
+    """ The class for the javelin """
     def __init__(self):
         super().__init__()
         self.texture = arcade.load_texture('Sprites/Player/Javlin.png')
@@ -384,6 +391,7 @@ class Javlin(arcade.Sprite):
 
 
 class DisplayHealth(arcade.Sprite):
+    """ The class for the players health """
     def __init__(self):
         super().__init__()
         self.texture = arcade.load_texture('Sprites/UI/HealthBar.png')
@@ -399,6 +407,7 @@ class DisplayHealth(arcade.Sprite):
         self.bar_list.append(self.bar)
 
     def draw(self):
+        """ Draws the players health """
         width = 492*(self.health/self.max_health)
         self.bar.center_x = self.center_x + 60 - (492 - width)/2
         self.bar.center_y = self.center_y

@@ -1,6 +1,8 @@
 import arcade
 from PIL import Image
 
+
+"""this section of code cuts up the text image file"""
 scaling = 6  # how much you scailed up the end sprite (this is determined by the % scaling you used when exporting)
 letter = []
 image = Image.open('Sprites/Medievil text calc.png')

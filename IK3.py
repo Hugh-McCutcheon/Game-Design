@@ -6,6 +6,7 @@ white = (255, 255, 255)
 
 
 def parabola(f_: Vec2d = (0, 0), t_: Vec2d = (1, 0), x_: float = 0):
+    """ Calculate a parabolic arc """
     x = x_  # the current x position of the end joint (foot)
     f = f_  # the starting position
     t = t_  # the target position
@@ -29,6 +30,7 @@ def parabola(f_: Vec2d = (0, 0), t_: Vec2d = (1, 0), x_: float = 0):
 
 
 def trajectory(s_: Vec2d = (0, 0), e_: Vec2d = (1, 1), t_: float = 0):
+    """ Calculate a trajectory """
     s = s_
     e = e_
     alpha = math.atan((s.y - e.y)/(s.x-e.x))
@@ -85,7 +87,7 @@ def IK_solverR(s_, h_, c_, a_, f_):
     :param c_: The length of the firts segment
     :param a_: The length of the secong segment
     :param f_: What direction the knee should be facing
-    :return: a point list of the legs
+    :return: a point list of limbs
     """
     f = f_  # the direction that the bend should be pointing
 
@@ -142,6 +144,7 @@ def IK_solverR(s_, h_, c_, a_, f_):
 
 
 def foot_target(o_: Vec2d = (0, 0), d_: float = 16, h_: float = 10, p_: float = 0):
+    """ Calculate the target point of the foot """
     o = o_  # origin
     d = d_  # distance till the foot has to move
     h = h_  # height of step
@@ -194,6 +197,7 @@ def simple_ik(joint0_: Vec2d=(0,0), Joint1_: Vec2d = (0,0), Hand_: Vec2d = (0,0)
 
 
 def clip(surf, x, y, x_size, y_size):
+    """ clip an image """
     handle_surf = surf.copy()
     clipr = arcade.Rect(x, y, x_size, y_size)
     handle_surf.set_clip(clipr)
@@ -202,6 +206,7 @@ def clip(surf, x, y, x_size, y_size):
 
 
 class IK(arcade.Window):
+    """ Used for testing of IK """
     def __init__(self):
         """
         Initializer
