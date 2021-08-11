@@ -69,7 +69,7 @@ class PlayerCharacter(arcade.Sprite):
         self.throw = False
         self.curve = None
         self.T = 0
-        self.jump_point = (0, 0)
+        self.jump_point = (1552, 288)
 
         #  other player things
         self.dead = False
