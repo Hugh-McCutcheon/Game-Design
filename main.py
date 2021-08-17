@@ -75,7 +75,6 @@ class MyGame(arcade.View):
 
         """player things"""
         arcade.set_background_color((62, 53, 70))
-        #  arcade.play_sound(arcade.load_sound('Sounds/Music Test.wav', True), 0.5, 0, True)
         self.player_list = arcade.SpriteList()
         self.player = player.PlayerCharacter()
         self.javlin = player.Javlin()
