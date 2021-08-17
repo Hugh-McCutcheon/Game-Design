@@ -23,6 +23,9 @@ class MyGame(arcade.View):
         self.javlin = None
         self.display_health_list = None
         self.display_health = None
+        self.crosshair = arcade.Sprite("Sprites/Player/Crosshair.png", scale=2)
+        self.crosshair.center_x = 0
+        self.crosshair.center_y = 0
 
         """Tilemap and Level Things"""
         self.wall_list = None
@@ -221,6 +224,9 @@ class MyGame(arcade.View):
         # calculates the center of the view
         self.view_center += Vec2d(self.player.center_x - self.view_center.x,
                                   self.player.center_y - self.view_center.y) * .2
+        self.crosshair.center_x = self.x + self.view_left
+        self.crosshair.center_y = self.y + self.view_bottom
+
         # draws the wall list
         self.wall_list = self.player.wall_list
         self.view_left = (self.view_center.x - constants.SCREEN_WIDTH // 2)
@@ -381,6 +387,7 @@ class MyGame(arcade.View):
 
                 text.draw()
             else:
+                # tell player to go to exit
                 text = Characters.gen_letter_list("You finished the tutorial.",
                                                   prompt_x - 549,
                                                   text_prompt_y)
@@ -390,7 +397,8 @@ class MyGame(arcade.View):
 
                 text.draw()
 
-                # tell player to go to exit
+        self.crosshair.draw()
+
     def on_update(self, delta_time: float):
         """ Game logic """
         if not self.player.dead:
@@ -413,7 +421,6 @@ class MyGame(arcade.View):
 
     def on_mouse_motion(self, x, y, delta_x, delta_y):
         """Called whenever the mouse moves. """
-
         self.x = x
         self.y = y
 
@@ -546,7 +553,7 @@ class MainMenu(arcade.View):
 def main():
     """ Runs the game """
     window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE, fullscreen=True)
-    window.set_mouse_visible(True)
+    window.set_mouse_visible(False)
     window.center_window()
     start_view = MainMenu()
     window.show_view(start_view)
