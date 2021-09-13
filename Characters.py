@@ -1,16 +1,24 @@
+"""
+Name: characters.py
+Author: Hugh McCutcheon
+Description: a pice of code that takes an image of text and splits it up into different characters
+then when called converts a string into a sprite to be displayed
+"""
+# importing libraries required to run the code
 import arcade
 from PIL import Image
 
 
 """this section of code cuts up the text image file"""
-scaling = 6  # how much you scailed up the end sprite (this is determined by the % scaling you used when exporting)
+scaling = 6  # how much you scaled up the end sprite (this is determined by the % scaling you used when exporting)
 letter = []
-image = Image.open('Sprites/Medievil text calc.png')
+image = Image.open('Sprites/Medievil text calc.png')  # 2 image files have to be used. 1 at 100% scale
+# and one at the scale you want
 current_char_width = 0
 character_count = 0
 for x in range(image.width):
     c = image.getpixel((x, 0))
-    if c == (255, 0, 0, 255):
+    if c == (255, 0, 0, 255):  # you use a completely red line betueen the letters to seperate them out.
         character_count += 1
         text = arcade.load_texture('Sprites/Medievil text.png', x=(x-current_char_width)*scaling, y=0,
                                    width=current_char_width*scaling, height=image.height*scaling)
@@ -23,6 +31,8 @@ for x in range(image.width):
 
 LETTERS = tuple(letter)
 
+# this is a key. the letters in the image are in the same order and the string you input is turned into numbers
+# using this key, then the numbers from the key are turned into a sprite
 LETTER_CODE = {
     "a": 0,
     "b": 1,
@@ -107,6 +117,7 @@ LETTER_CODE = {
 LETTER_SIZE = 0
 
 
+# this is the function called whehn making text. it converts the given string into a sprite
 def gen_letter_list(string: str = None, s_x: float = 0, s_y: float = 0, scale: float = 1, gap: int = 10):
     """
     :param string: The actual string that is being converted
@@ -120,6 +131,7 @@ def gen_letter_list(string: str = None, s_x: float = 0, s_y: float = 0, scale: f
     string.lower()
     prev_letter_width = 0
     prev_letter_pos = s_x
+    # this section of code either adds a character to the sprite or a space
     for index, char in enumerate(string):
         if char != " ":
             texture = LETTERS[LETTER_CODE[char]]

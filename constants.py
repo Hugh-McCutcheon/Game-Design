@@ -1,3 +1,8 @@
+"""
+Name: constants.py
+Author: Hugh McCutcheon
+Description: A file containing all of the constant variables used by my code
+"""
 import arcade
 
 TILE_SPRITE_SCALING = 1

@@ -1,3 +1,8 @@
+"""
+Name: IK3.py
+Author: Hugh McCutcheon
+Description: mainly a testing area but also used to hold parabola and inverse kinamatic calculations
+"""
 import math
 import arcade
 from pymunk import Vec2d
@@ -6,7 +11,7 @@ white = (255, 255, 255)
 
 
 def parabola(f_: Vec2d = (0, 0), t_: Vec2d = (1, 0), x_: float = 0):
-    """ Calculate a parabolic arc """
+    """ Calculate a parabolic arc e.g for throwing, foot movement"""
     x = x_  # the current x position of the end joint (foot)
     f = f_  # the starting position
     t = t_  # the target position
@@ -30,7 +35,7 @@ def parabola(f_: Vec2d = (0, 0), t_: Vec2d = (1, 0), x_: float = 0):
 
 
 def trajectory(s_: Vec2d = (0, 0), e_: Vec2d = (1, 1), t_: float = 0):
-    """ Calculate a trajectory """
+    """ Calculate a trajectory e.g. for throwing or foot movement"""
     s = s_
     e = e_
     alpha = math.atan((s.y - e.y)/(s.x-e.x))
@@ -43,43 +48,8 @@ def trajectory(s_: Vec2d = (0, 0), e_: Vec2d = (1, 1), t_: float = 0):
     return Vec2d(a, b)
 
 
-"""
-def IK_solverR(s_, h_, c_, a_, f_):
-    f = f_  # the direction that the bend should be pointing
-    S = s_
-    H = h_
-    c = c_
-    a = a_
-    b = math.sqrt((H.x - S.x) ** 2 + (H.y - S.y) ** 2)
-    #B=math.pi-beta
-    if Vec2d.get_distance(S, H) > c+a:# or S.x == H.x:
-        if (H.x-S.x) == 0:
-            A1 = math.pi/2
-            B = 0
-        else:
-            A1 = math.atan((H.y - S.y) / (H.x-S.x))
-        A = A1  # to flip do A1-alpha
-    else:
-        A1 = math.atan((H.y - S.y) / (H.x - S.x))
-        alpha = math.acos((b ** 2 + c ** 2 - a ** 2) / (2 * b * c))
-        beta = math.acos((a ** 2 + c ** 2 - b ** 2) / (2 * a * c))
-        gamma = math.pi - (alpha + beta)
-        facing = {
-            'right': alpha + A1,
-            'left': A1 - alpha
-        }
-        A = facing[f]  # to flip do A1-alpha
-    if S.x >= H.x:
-        x3 = S.x-c*math.cos(A)
-        y3 = S.y-c*math.sin(A)
-    else:
-        x3 = S.x + c * math.cos(A)
-        y3 = S.y + c * math.sin(A)
-    E = Vec2d(x3, y3)
-    point_list = [S, E, H]
-    return point_list"""
-
-
+# an inverse kinamatic solver this is used to calculate the position of my character arms and legs.
+# The whole function is basicly just an equation which is used for limbs
 def IK_solverR(s_, h_, c_, a_, f_):
     """
     :param s_: The starting Point
@@ -143,6 +113,7 @@ def IK_solverR(s_, h_, c_, a_, f_):
     return point_list
 
 
+# calculates the end point for the foot depending on where the foot my my character started
 def foot_target(o_: Vec2d = (0, 0), d_: float = 16, h_: float = 10, p_: float = 0):
     """ Calculate the target point of the foot """
     o = o_  # origin
@@ -154,48 +125,7 @@ def foot_target(o_: Vec2d = (0, 0), d_: float = 16, h_: float = 10, p_: float = 
     return g
 
 
-"""
-def simple_ik(joint0_: Vec2d=(0,0), Joint1_: Vec2d = (0,0), Hand_: Vec2d = (0,0), Target_: Vec2d = (0,0)):
-    joint0 = joint0_
-    Joint1 = Joint1_
-    Hand = Hand_
-    Target = Target_
-    length0 = Vec2d.get_distance(joint0, Joint1)
-    length1 = Vec2d.get_distance(Joint1, Hand)
-    # update
-    length2 = Vec2d.get_distance(joint0, Target)
-    diff = Target-joint0
-    atan = math.atan2(diff.y, diff.x)
-
-    if length0+length1 < length2:
-        jointAngle0 = atan
-        jointAngle1 = 0
-
-    else:
-
-        #alpha
-        cosAngle0 = ((length2 ** 2+length0**2-length1**2)/(2*length2*length0))
-        angle0 = math.acos(cosAngle0)
-        #beta
-        cosAngle1 = ((length1**2+length0**2-length2**2)/(2*length1*length0))
-        angle1 = math.acos(cosAngle1)
-        #angle from joint0 and target
-
-        jointAngle0 = atan - angle0
-        jointAngle1 = math.pi - angle1
-
-
-
-    joint0 = joint0.rotated(jointAngle0)
-    Joint1 = joint0 + Joint1.rotated(jointAngle0)
-    Hand = Joint1 + Hand.rotated(jointAngle1)
-    a = joint0
-    b = Joint1
-    c = Hand
-    IK_list = [a, b, c]
-    return IK_list"""
-
-
+# code that is used to read the pixels at a point of an image
 def clip(surf, x, y, x_size, y_size):
     """ clip an image """
     handle_surf = surf.copy()
@@ -205,8 +135,9 @@ def clip(surf, x, y, x_size, y_size):
     return image.copy()
 
 
+# a view I used to test inverse kinamatics while i was making them this code is deprecated
 class IK(arcade.Window):
-    """ Used for testing of IK """
+    """ Used for testing of IK (depricated)"""
     def __init__(self):
         """
         Initializer
